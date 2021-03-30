@@ -1,23 +1,39 @@
 package com.example.refresh_selection
 
+import android.Manifest
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothSocket
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import java.io.InputStream
+import java.io.OutputStream
 
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
-    private val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.NONE) {
-        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
-        bluetoothManager.adapter
-    }
+class MainActivity : AppCompatActivity(){
+
+    private val REQUEST_ENABLE_BT = 3
+    var mBluetoothAdapter: BluetoothAdapter? = null
+    var mDevices: Set<BluetoothDevice>? = null
+    var mPairedDeviceCount = 0
+    var mRemoteDevice: BluetoothDevice? = null
+    var mSocket: BluetoothSocket? = null
+    var mInputStream: InputStream? = null
+    var mOutputStream: OutputStream? = null
+    var mWorkerThread: Thread? = null
+    var mDelimiter: Byte = 10
+    private var bluetoothAdapter: BluetoothAdapter? = null
 
     private val BluetoothAdapter.isDisabled: Boolean
         get() = !isEnabled
@@ -30,10 +46,33 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         mBtn = findViewById(R.id.pairBt) as Button
 
-        //블루투스 연결을 위한 어댑터
-        bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
+        //권한 설정
+        val permission1 = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH)
+        val permission2 = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN)
+        val permission3 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        val permission4 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (permission1 != PackageManager.PERMISSION_GRANTED
+                || permission2 != PackageManager.PERMISSION_GRANTED
+                || permission3 != PackageManager.PERMISSION_GRANTED
+                || permission4 != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(
+                            Manifest.permission.BLUETOOTH,
+                            Manifest.permission.BLUETOOTH_ADMIN,
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION),
+                    642)
+        } else {
+            Log.d("DISCOVERING-PERMISSIONS", "Permissions Granted")
+        }
+
+        val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
+        if (bluetoothAdapter == null) {
+            // Device doesn't support Bluetooth
+        }
+        if (bluetoothAdapter?.isEnabled == false) {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-            startActivityForResult(enableBtIntent, 1)
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
         }
 
         //페어링된 디바이스 set
@@ -43,11 +82,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             val deviceHardwareAddress = device.address // MAC address
         }
 
-        // Register for broadcasts when a device is discovered.
-        val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-        registerReceiver(receiver, filter)
-
-        mBtn!!.setOnClickListener(pairing);
+        val button = findViewById<Button>(R.id.pairBt)
+        button.setOnClickListener {
+            if (bluetoothAdapter?.isDiscovering == true) {
+                bluetoothAdapter?.cancelDiscovery()
+            }
+            var filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+            this.registerReceiver(receiver, filter)
+            filter = IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
+            this.registerReceiver(receiver, filter)
+            filter = IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+            this.registerReceiver(receiver, filter)
+            bluetoothAdapter?.startDiscovery()
+        }
 
     }
 
@@ -57,32 +104,27 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         override fun onReceive(context: Context, intent: Intent) {
             val action: String? = intent.action
             when(action) {
+                BluetoothAdapter.ACTION_DISCOVERY_STARTED ->{
+                    Log.d("Discovery_started","ok")
+                }
                 BluetoothDevice.ACTION_FOUND -> {
-                    // Discovery has found a device. Get the BluetoothDevice
-                    // object and its info from the Intent.
                     val device: BluetoothDevice? =
                             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     val deviceName = device?.name
                     val deviceHardwareAddress = device?.address // MAC address
+
+                    if (deviceName != null && deviceHardwareAddress != null) {
+                        Log.d("BluetoothName: ",deviceName)
+                        Log.d("Bluetooth Mac Address:", deviceHardwareAddress)
+                    }
                 }
             }
         }
     }
     override fun onDestroy() {
         super.onDestroy()
-
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver)
-    }
-
-    val pairing: View.OnClickListener = object : View.OnClickListener{
-        override fun onClick(v: View?) {
-            bluetoothAdapter?.startDiscovery()
-        }
-    }
-
-    override fun onClick(v: View?) {
-        TODO("Not yet implemented")
     }
 
 }
