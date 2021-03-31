@@ -1,39 +1,40 @@
 package com.example.refresh_selection
 
 import android.Manifest
-import android.app.Activity
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothSocket
+import android.bluetooth.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.BaseAdapter
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import java.io.InputStream
 import java.io.OutputStream
+import java.util.*
 
+private const val SCAN_PERIOD: Long = 10000
 
 class MainActivity : AppCompatActivity(){
-
+    var bluetoothGatt: BluetoothGatt? = null
     private val REQUEST_ENABLE_BT = 3
-    var mBluetoothAdapter: BluetoothAdapter? = null
-    var mDevices: Set<BluetoothDevice>? = null
-    var mPairedDeviceCount = 0
-    var mRemoteDevice: BluetoothDevice? = null
-    var mSocket: BluetoothSocket? = null
-    var mInputStream: InputStream? = null
-    var mOutputStream: OutputStream? = null
-    var mWorkerThread: Thread? = null
-    var mDelimiter: Byte = 10
-    private var bluetoothAdapter: BluetoothAdapter? = null
+    private var leDeviceListAdapter: LeDeviceListAdapter? = null
+    private var mScanning: Boolean = false
+    private var handler: Handler? = null
+
+    private fun PackageManager.missingSystemFeature(name: String): Boolean = !hasSystemFeature(name)
+    private val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.NONE) {
+        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        bluetoothManager.adapter
+    }
 
     private val BluetoothAdapter.isDisabled: Boolean
         get() = !isEnabled
@@ -43,6 +44,8 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        handler = Handler()
 
         mBtn = findViewById(R.id.pairBt) as Button
 
@@ -66,65 +69,116 @@ class MainActivity : AppCompatActivity(){
             Log.d("DISCOVERING-PERMISSIONS", "Permissions Granted")
         }
 
-        val bluetoothAdapter: BluetoothAdapter? = BluetoothAdapter.getDefaultAdapter()
-        if (bluetoothAdapter == null) {
-            // Device doesn't support Bluetooth
+        packageManager.takeIf { it.missingSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) }?.also {
+//            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show()
+            finish()
         }
-        if (bluetoothAdapter?.isEnabled == false) {
+
+        bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
             val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
         }
 
-        //페어링된 디바이스 set
+//        페어링된 디바이스 set
         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
         pairedDevices?.forEach { device ->
             val deviceName = device.name
             val deviceHardwareAddress = device.address // MAC address
         }
 
+        leDeviceListAdapter = LeDeviceListAdapter()
+
         val button = findViewById<Button>(R.id.pairBt)
         button.setOnClickListener {
-            if (bluetoothAdapter?.isDiscovering == true) {
-                bluetoothAdapter?.cancelDiscovery()
-            }
-            var filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
-            this.registerReceiver(receiver, filter)
-            filter = IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
-            this.registerReceiver(receiver, filter)
-            filter = IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
-            this.registerReceiver(receiver, filter)
-            bluetoothAdapter?.startDiscovery()
+            scanLeDevice(true)
         }
 
     }
+    private val leScanCallback = BluetoothAdapter.LeScanCallback { device, rssi, scanRecord ->
+        runOnUiThread {
+            leDeviceListAdapter!!.addDevice(device)
+            leDeviceListAdapter!!.notifyDataSetChanged()
+        }
+    }
 
-
-    // Create a BroadcastReceiver for ACTION_FOUND.
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            val action: String? = intent.action
-            when(action) {
-                BluetoothAdapter.ACTION_DISCOVERY_STARTED ->{
-                    Log.d("Discovery_started","ok")
-                }
-                BluetoothDevice.ACTION_FOUND -> {
-                    val device: BluetoothDevice? =
-                            intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                    val deviceName = device?.name
-                    val deviceHardwareAddress = device?.address // MAC address
-
-                    if (deviceName != null && deviceHardwareAddress != null) {
-                        Log.d("BluetoothName: ",deviceName)
-                        Log.d("Bluetooth Mac Address:", deviceHardwareAddress)
-                    }
-                }
+    private fun scanLeDevice(enable: Boolean) {
+        when (enable) {
+            true -> {
+                // Stops scanning after a pre-defined scan period.
+                handler?.postDelayed({
+                    mScanning = false
+                    bluetoothAdapter?.stopLeScan(leScanCallback)
+                }, SCAN_PERIOD)
+                mScanning = true
+                bluetoothAdapter?.startLeScan(leScanCallback)
+            }
+            else -> {
+                mScanning = false
+                bluetoothAdapter?.stopLeScan(leScanCallback)
             }
         }
     }
-    override fun onDestroy() {
-        super.onDestroy()
-        // Don't forget to unregister the ACTION_FOUND receiver.
-        unregisterReceiver(receiver)
+
+
+    // Adapter for holding devices found through scanning.
+    private inner class LeDeviceListAdapter : BaseAdapter() {
+        private val mLeDevices: ArrayList<BluetoothDevice>
+        private val mInflator: LayoutInflater
+
+        init {
+            mLeDevices = ArrayList<BluetoothDevice>()
+            mInflator = this@MainActivity.layoutInflater
+        }
+
+        fun addDevice(device: BluetoothDevice) {
+            if (!mLeDevices.contains(device)) {
+                if(device!=null){
+                    Log.d("addDevice",device.toString())
+                }
+                mLeDevices.add(device)
+            }
+        }
+
+        fun getDevice(position: Int): BluetoothDevice? {
+            return mLeDevices[position]
+        }
+
+        fun clear() {
+            mLeDevices.clear()
+        }
+
+        override fun getCount(): Int {
+            return mLeDevices.size
+        }
+
+        override fun getItem(i: Int): Any {
+            return mLeDevices[i]
+        }
+
+        override fun getItemId(i: Int): Long {
+            return i.toLong()
+        }
+
+        override fun getView(i: Int, view: View, viewGroup: ViewGroup): View {
+            var view = view
+//            val viewHolder: ViewHolder
+            // General ListView optimization code.
+            if (view == null) {
+//                view = mInflator.inflate(R.layout.listitem_device, null)
+//                viewHolder = ViewHolder()
+//                viewHolder.deviceAddress = view.findViewById<View>(R.id.device_address) as TextView
+//                viewHolder.deviceName = view.findViewById<View>(R.id.device_name) as TextView
+//                view.tag = viewHolder
+            } else {
+//                viewHolder = view.tag as DeviceScanActivity.ViewHolder
+            }
+            val device = mLeDevices[i]
+            val deviceName = device.name
+//            if (deviceName != null && deviceName.length > 0) viewHolder.deviceName!!.text = deviceName else viewHolder.deviceName.setText(R.string.unknown_device)
+//            viewHolder.deviceAddress!!.text = device.address
+            return view
+        }
     }
+
 
 }
