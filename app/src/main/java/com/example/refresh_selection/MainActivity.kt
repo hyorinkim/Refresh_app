@@ -1,8 +1,10 @@
 package com.example.refresh_selection
 
 import android.Manifest
-import android.bluetooth.*
-import android.content.BroadcastReceiver
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -14,11 +16,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import java.io.InputStream
-import java.io.OutputStream
+import org.w3c.dom.Text
 import java.util.*
 
 private const val SCAN_PERIOD: Long = 10000
@@ -47,7 +49,7 @@ class MainActivity : AppCompatActivity(){
 
         handler = Handler()
 
-        mBtn = findViewById(R.id.pairBt) as Button
+        mBtn = findViewById<Button>(R.id.pairBt)
 
         //권한 설정
         val permission1 = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH)
@@ -91,6 +93,7 @@ class MainActivity : AppCompatActivity(){
         val button = findViewById<Button>(R.id.pairBt)
         button.setOnClickListener {
             scanLeDevice(true)
+            findViewById<View>(R.id.scrollView).visibility = View.VISIBLE
         }
 
     }
@@ -133,9 +136,19 @@ class MainActivity : AppCompatActivity(){
         fun addDevice(device: BluetoothDevice) {
             if (!mLeDevices.contains(device)) {
                 if(device!=null){
-                    Log.d("addDevice",device.toString())
+                    if(device.name!=null){
+                        Log.d("addDeviceAddress",device.name)
+                        Log.d("addDeviceAddress",device.toString())
+                        mLeDevices.add(device)
+                        if(device.name.contains("Mi Band")){
+                            val textView: TextView = findViewById<TextView>(R.id.deviceName)
+                            val textView2: TextView = findViewById<TextView>(R.id.address)
+                            textView.text = device.name
+                            textView2.text = device.address
+                        }
+                    }
                 }
-                mLeDevices.add(device)
+//                mLeDevices.add(device)
             }
         }
 
@@ -159,26 +172,28 @@ class MainActivity : AppCompatActivity(){
             return i.toLong()
         }
 
-        override fun getView(i: Int, view: View, viewGroup: ViewGroup): View {
+        override fun getView(i: Int, view: View?, viewGroup: ViewGroup?): View? {
             var view = view
-//            val viewHolder: ViewHolder
+            val viewHolder: ViewHolder
             // General ListView optimization code.
             if (view == null) {
-//                view = mInflator.inflate(R.layout.listitem_device, null)
-//                viewHolder = ViewHolder()
-//                viewHolder.deviceAddress = view.findViewById<View>(R.id.device_address) as TextView
-//                viewHolder.deviceName = view.findViewById<View>(R.id.device_name) as TextView
-//                view.tag = viewHolder
+                view = mInflator.inflate(R.layout.activity_main, null)
+                viewHolder = ViewHolder()
+//                viewHolder.deviceAddress = view.findViewById<View>(R.id.multiLine) as TextView
+//                viewHolder.deviceName = view.findViewById<View>(R.id.multiLIne2) as TextView
+                view.tag = viewHolder
             } else {
-//                viewHolder = view.tag as DeviceScanActivity.ViewHolder
+                viewHolder = view.tag as ViewHolder
             }
             val device = mLeDevices[i]
             val deviceName = device.name
 //            if (deviceName != null && deviceName.length > 0) viewHolder.deviceName!!.text = deviceName else viewHolder.deviceName.setText(R.string.unknown_device)
-//            viewHolder.deviceAddress!!.text = device.address
+            viewHolder.deviceAddress!!.text = device.address
             return view
         }
     }
-
-
+    internal class ViewHolder {
+        var deviceName: TextView? = null
+        var deviceAddress: TextView? = null
+    }
 }
