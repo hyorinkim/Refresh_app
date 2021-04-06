@@ -85,7 +85,7 @@
                 android:layout_marginStart="50dp"
                 android:layout_marginTop="20dp"
                 android:text="기기 이름:"
-                android:textColor="#FFFFFF"
+                android:textColor="#3C3F41"
                 android:textSize="24sp" />
 
             <TextView
@@ -147,5 +147,14 @@
         android:layout_marginTop="64dp"
         app:layout_constraintStart_toStartOf="@+id/view"
         app:layout_constraintTop_toTopOf="@+id/view" />
+
+    <Button
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Button"
+        android:visibility="visible"
+        tools:layout_editor_absoluteX="20dp"
+        tools:layout_editor_absoluteY="116dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
