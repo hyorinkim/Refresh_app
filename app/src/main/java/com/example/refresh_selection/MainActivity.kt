@@ -1,5 +1,6 @@
 package com.example.refresh_selection
 
+import android.Manifest
 import android.bluetooth.*
 import android.content.*
 import android.content.pm.PackageManager
@@ -15,6 +16,8 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import java.util.*
 
 
@@ -22,17 +25,15 @@ private const val SCAN_PERIOD: Long = 10000
 private val TAG = BluetoothLeService::class.java.simpleName
 
 class MainActivity : AppCompatActivity(){
-    private var mConnectionState: TextView? = null
     private val REQUEST_ENABLE_BT = 3
     private var leDeviceListAdapter: LeDeviceListAdapter? = null
     private var mScanning: Boolean = false
     private var handler: Handler? = null
     private var mibandDevice: BluetoothDevice? = null;
     var bluetoothLeService : BluetoothLeService? = null
-    private var mGattCharacteristics: ArrayList<ArrayList<BluetoothGattCharacteristic>>? = ArrayList()
     private var mConnected = false
-    private var mNotifyCharacteristic: BluetoothGattCharacteristic? = null
-
+    private var isBindedService = false
+    private var setServiceNotification: List<UUID>? = null;
 
     private fun PackageManager.missingSystemFeature(name: String): Boolean = !hasSystemFeature(name)
     private val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.NONE) {
@@ -44,6 +45,7 @@ class MainActivity : AppCompatActivity(){
         get() = !isEnabled
 
     private var mBtn: Button? = null
+    private var scanBtn: Button? = null
 
     override fun onResume() {
         super.onResume()
@@ -54,14 +56,18 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
+    /**
+     * 앱 시작 시 실행
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        getBluetoothPermissions()
 
+        //변수 초기화
         handler = Handler()
-
         mBtn = findViewById<Button>(R.id.pairBt)
-
+        scanBtn = findViewById<Button>(R.id.scan)
         leDeviceListAdapter = LeDeviceListAdapter()
 
         packageManager.takeIf { it.missingSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) }?.also {
@@ -74,53 +80,82 @@ class MainActivity : AppCompatActivity(){
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
         }
 
-//        페어링된 디바이스 set
+        //페어링된 디바이스가 있는지 확인
         val pairedDevices: Set<BluetoothDevice>? = bluetoothAdapter?.bondedDevices
         pairedDevices?.forEach { device ->
             val deviceName = device.name
             val deviceHardwareAddress = device.address // MAC address
         }
-
-        findViewById<View>(R.id.scrollView).visibility = View.VISIBLE
         if (pairedDevices != null) {
             for (device in pairedDevices) {
                 if (device.name.contains("Mi band")) {
                     mibandDevice = device;
-                    val textView: TextView = findViewById<TextView>(R.id.deviceName)
-                    val textView2: TextView = findViewById<TextView>(R.id.address)
-                    textView.text = device.name
-                    textView2.text = device.address
+                    setMibandDeviceInfoView()
                     break
                 }
             }
         }
 
+        //페어링된 디바이스가 없으면 블루투스 스캔 시작
         if(mibandDevice == null){
             scanLeDevice(true)
-        }else {
-            val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-            mBtn?.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
         }
 
-        val button = findViewById<Button>(R.id.pairBt)
-        button.setOnClickListener {
+        //paring 버튼 이벤트. 페어링을 시작함.
+        mBtn!!.setOnClickListener {
+            mBtn?.visibility = View.GONE
+            findViewById<View>(R.id.scrollView).visibility = View.GONE
             mibandDevice?.name?.let { it1 -> Log.d("mibandDevice", it1) }
             val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
-            bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
+            isBindedService = bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
         }
 
-        val button2 = findViewById<Button>(R.id.test)
-        button2.setOnClickListener {
-            //val characteristic = mGattCharacteristics!![6][0]
-            //bluetoothLeService!!.setCharacteristicNotification(characteristic,true)
-            bluetoothLeService!!.readCharacteristic()
-            //Log.d("charateristic",characteristic.value.toString())
+        //scan button event. 디바이스를 못 찾을 경우 나타나는 버튼으로 클릭 시 다시 스캔을 시작
+        scanBtn!!.setOnClickListener {
+            findViewById<ProgressBar>(R.id.progressBar).visibility = View.VISIBLE
+            scanBtn?.visibility = View.INVISIBLE
+            scanLeDevice(true)
         }
-
     }
 
-    // Code to manage Service lifecycle.
+    /**
+     * 미밴드 디바이스 정보를 뷰에 나타냄
+     */
+    fun setMibandDeviceInfoView() {
+        val textView: TextView = findViewById<TextView>(R.id.deviceName)
+        val textView2: TextView = findViewById<TextView>(R.id.address)
+        findViewById<View>(R.id.scrollView).visibility = View.VISIBLE
+        scanBtn?.visibility = View.INVISIBLE
+        findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
+        mBtn?.visibility = View.VISIBLE
+        textView.text = mibandDevice!!.name
+        textView2.text = mibandDevice!!.address
+    }
+
+    /**
+     * 앱의 권한을 설정
+     */
+    fun getBluetoothPermissions() {
+        val permission1 = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH)
+        val permission2 = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN)
+        val permission3 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        val permission4 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (permission1 != PackageManager.PERMISSION_GRANTED
+                || permission2 != PackageManager.PERMISSION_GRANTED
+                || permission3 != PackageManager.PERMISSION_GRANTED
+                || permission4 != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(
+                            Manifest.permission.BLUETOOTH,
+                            Manifest.permission.BLUETOOTH_ADMIN,
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION),
+                    642)
+        } else {
+            Log.d("DISCOVERING-PERMISSIONS", "Permissions Granted")
+        }
+    }
+
     private val mServiceConnection = object : ServiceConnection {
 
         override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
@@ -129,7 +164,6 @@ class MainActivity : AppCompatActivity(){
                 Log.e(TAG, "Unable to initialize Bluetooth")
                 finish()
             }
-            // Automatically connects to the device upon successful start-up initialization.
             bluetoothLeService!!.connect(mibandDevice?.address)
         }
 
@@ -138,6 +172,9 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
+    /**
+     * BluetoothLeService 에서 날린 브로드캐스트를 여기서 받음.
+     */
     private val mGattUpdateReceiver = object : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
@@ -145,75 +182,40 @@ class MainActivity : AppCompatActivity(){
             when (action){
                 ACTION_GATT_CONNECTED -> {
                     mConnected = true
-                    //updateConnectionState(R.string.connected)
                     invalidateOptionsMenu()
                 }
                 ACTION_GATT_DISCONNECTED -> {
                     mConnected = false
-                    //updateConnectionState(R.string.disconnected)
                     invalidateOptionsMenu()
-                    //clearUI()
-                }
-                ACTION_GATT_SERVICES_DISCOVERED -> {
-                    // Show all the supported services and characteristics on the user interface.
-                    displayGattServices(bluetoothLeService!!.supportedGattServices)
                 }
                 ACTION_DATA_AVAILABLE -> {
-                    Log.d("actionDataAvailiabe","s")
-                    //displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA))
+                }
+                ACTION_GATT_SERVICES_DISCOVERED -> {
+
                 }
             }
         }
     }
-    private fun updateConnectionState(resourceId: Int) {
-        runOnUiThread { mConnectionState!!.setText(resourceId) }
-    }
 
-    private fun displayGattServices(gattServices: List<BluetoothGattService>?) {
-        if (gattServices == null) return
-        var uuid: String?
-        //val unknownServiceString: String = resources.getString(R.string.unknown_service)
-        //val unknownCharaString: String = resources.getString(R.string.unknown_characteristic)
-        val gattServiceData: MutableList<HashMap<String, String>> = mutableListOf()
-        val gattCharacteristicData: MutableList<ArrayList<HashMap<String, String>>> =
-                mutableListOf()
-        mGattCharacteristics =  ArrayList<ArrayList<BluetoothGattCharacteristic>>()
-
-        // Loops through available GATT Services.
-        gattServices.forEach { gattService ->
-            val currentServiceData = HashMap<String, String>()
-            uuid = gattService.uuid.toString()
-            Log.d("Gatt_Servide UUID", uuid!!)
-            //currentServiceData[LIST_NAME] = SampleGattAttributes.lookup(uuid, unknownServiceString)
-            //currentServiceData[LIST_UUID] = uuid
-            gattServiceData += currentServiceData
-
-            val gattCharacteristicGroupData: ArrayList<HashMap<String, String>> = arrayListOf()
-            val gattCharacteristics = gattService.characteristics
-            val charas = ArrayList<BluetoothGattCharacteristic>()
-
-            // Loops through available Characteristics.
-            gattCharacteristics.forEach { gattCharacteristic ->
-                charas.add(gattCharacteristic)
-                val currentCharaData: HashMap<String, String> = hashMapOf()
-                uuid = gattCharacteristic.uuid.toString()
-                Log.d("Gatt_charar UUID", uuid!!)
-                //currentCharaData[LIST_NAME] = SampleGattAttributes.lookup(uuid, unknownCharaString)
-                //currentCharaData[LIST_UUID] = uuid
-                gattCharacteristicGroupData += currentCharaData
-            }
-            mGattCharacteristics!!.add(charas)
-            gattCharacteristicData += gattCharacteristicGroupData
-        }
-    }
-
+    /**
+     * 디바이스 스캔시 콜백
+     */
     private val leScanCallback = BluetoothAdapter.LeScanCallback { device, rssi, scanRecord ->
         runOnUiThread {
-            leDeviceListAdapter!!.addDevice(device)
-            leDeviceListAdapter!!.notifyDataSetChanged()
+            if( mScanning ) {
+                leDeviceListAdapter!!.addDevice(device)
+                leDeviceListAdapter!!.notifyDataSetChanged()
+            } else {
+                if( mibandDevice != null ) { //미밴드 디바이스를 찾을 시
+                    setMibandDeviceInfoView()
+                }
+            }
         }
     }
 
+    /**
+     * 블루투스 디바이스 스캔
+     */
     private fun scanLeDevice(enable: Boolean) {
         when (enable) {
             true -> {
@@ -221,6 +223,10 @@ class MainActivity : AppCompatActivity(){
                 handler?.postDelayed({
                     mScanning = false
                     bluetoothAdapter?.stopLeScan(leScanCallback)
+                    if(mibandDevice==null) {
+                        scanBtn?.visibility = View.VISIBLE
+                        findViewById<ProgressBar>(R.id.progressBar).visibility = View.INVISIBLE
+                    }
                 }, SCAN_PERIOD)
                 mScanning = true
                 bluetoothAdapter?.startLeScan(leScanCallback)
@@ -232,48 +238,36 @@ class MainActivity : AppCompatActivity(){
         }
     }
 
-
-    // Adapter for holding devices found through scanning.
+    /**
+     * 블루투스 스캔을 통해 찾은 디바이스를 관리하기 위한 어댑터 클래스
+     */
     private inner class LeDeviceListAdapter : BaseAdapter() {
-        private val mLeDevices: ArrayList<BluetoothDevice>
-        private val mInflater: LayoutInflater
+        private val mLeDevices: ArrayList<BluetoothDevice> = ArrayList<BluetoothDevice>()
 
-        init {
-            mLeDevices = ArrayList<BluetoothDevice>()
-            mInflater = this@MainActivity.layoutInflater
-        }
-
+        /**
+         * 디바이스 이름이 Mi band인 디바이스를 찾아 mLeDevices 리스트에 집어넣음.
+         */
         fun addDevice(device: BluetoothDevice) {
             if (!mLeDevices.contains(device)) {
                 if(device!=null){
                     if(device.name!=null){
                         if(device.name.contains("Mi Band")){
                             mLeDevices.add(device)
-                            bluetoothAdapter?.stopLeScan(leScanCallback)
-                            val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-                            mBtn?.visibility = View.VISIBLE
-                            progressBar.visibility = View.GONE
-                            val textView: TextView = findViewById<TextView>(R.id.deviceName)
-                            val textView2: TextView = findViewById<TextView>(R.id.address)
-                            textView.text = device.name
-                            textView2.text = device.address
                             mibandDevice = device;
+                            setMibandDeviceInfoView()
+                            scanLeDevice(false)
                         }
                     }
                 }
             }
         }
 
-        fun getDevice(position: Int): BluetoothDevice? {
-            return mLeDevices[position]
-        }
-
-        fun clear() {
-            mLeDevices.clear()
-        }
-
         override fun getCount(): Int {
             return mLeDevices.size
+        }
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+            TODO("Not yet implemented")
         }
 
         override fun getItem(i: Int): Any {
@@ -283,41 +277,11 @@ class MainActivity : AppCompatActivity(){
         override fun getItemId(i: Int): Long {
             return i.toLong()
         }
-
-        override fun getView(i: Int, view: View?, viewGroup: ViewGroup?): View? {
-            var view = view
-            val viewHolder: ViewHolder
-            // General ListView optimization code.
-            if (view == null) {
-                view = mInflater.inflate(R.layout.activity_main, null)
-                viewHolder = ViewHolder()
-//                viewHolder.deviceAddress = view.findViewById<View>(R.id.multiLine) as TextView
-//                viewHolder.deviceName = view.findViewById<View>(R.id.multiLIne2) as TextView
-                view.tag = viewHolder
-            } else {
-                viewHolder = view.tag as ViewHolder
-            }
-            val device = mLeDevices[i]
-            val deviceName = device.name
-//            if (deviceName != null && deviceName.length > 0) viewHolder.deviceName!!.text = deviceName else viewHolder.deviceName.setText(R.string.unknown_device)
-            viewHolder.deviceAddress!!.text = device.address
-            return view
-        }
-    }
-    internal class ViewHolder {
-        var deviceName: TextView? = null
-        var deviceAddress: TextView? = null
-    }
-
-
-    override fun onPause() {
-        super.onPause()
-        unregisterReceiver(mGattUpdateReceiver)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(mServiceConnection)
+        if( isBindedService  ) unbindService(mServiceConnection)
         bluetoothLeService = null
     }
 
@@ -332,6 +296,7 @@ class MainActivity : AppCompatActivity(){
             intentFilter.addAction(ACTION_GATT_DISCONNECTED)
             intentFilter.addAction(ACTION_GATT_SERVICES_DISCOVERED)
             intentFilter.addAction(ACTION_DATA_AVAILABLE)
+            intentFilter.addAction(ACTIVITY_DATA_FETCH)
             return intentFilter
         }
     }
