@@ -1,5 +1,6 @@
 package com.example.refresh_selection
 
+import android.Manifest
 import android.bluetooth.*
 import android.content.*
 import android.content.pm.PackageManager
@@ -15,6 +16,8 @@ import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import java.util.*
 
 
@@ -63,6 +66,25 @@ class MainActivity : AppCompatActivity(){
         mBtn = findViewById<Button>(R.id.pairBt)
 
         leDeviceListAdapter = LeDeviceListAdapter()
+        //권한 설정
+        val permission1 = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH)
+        val permission2 = ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN)
+        val permission3 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        val permission4 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (permission1 != PackageManager.PERMISSION_GRANTED
+                || permission2 != PackageManager.PERMISSION_GRANTED
+                || permission3 != PackageManager.PERMISSION_GRANTED
+                || permission4 != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(
+                            Manifest.permission.BLUETOOTH,
+                            Manifest.permission.BLUETOOTH_ADMIN,
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION),
+                    642)
+        } else {
+            Log.d("DISCOVERING-PERMISSIONS", "Permissions Granted")
+        }
 
         packageManager.takeIf { it.missingSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) }?.also {
 //            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show()
@@ -97,10 +119,6 @@ class MainActivity : AppCompatActivity(){
 
         if(mibandDevice == null){
             scanLeDevice(true)
-        }else {
-            val progressBar = findViewById<ProgressBar>(R.id.progressBar)
-            mBtn?.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
         }
 
         val button = findViewById<Button>(R.id.pairBt)
@@ -109,15 +127,6 @@ class MainActivity : AppCompatActivity(){
             val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
             bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
         }
-
-        val button2 = findViewById<Button>(R.id.test)
-        button2.setOnClickListener {
-            //val characteristic = mGattCharacteristics!![6][0]
-            //bluetoothLeService!!.setCharacteristicNotification(characteristic,true)
-            bluetoothLeService!!.readCharacteristic()
-            //Log.d("charateristic",characteristic.value.toString())
-        }
-
     }
 
     // Code to manage Service lifecycle.
@@ -129,7 +138,6 @@ class MainActivity : AppCompatActivity(){
                 Log.e(TAG, "Unable to initialize Bluetooth")
                 finish()
             }
-            // Automatically connects to the device upon successful start-up initialization.
             bluetoothLeService!!.connect(mibandDevice?.address)
         }
 
@@ -145,65 +153,21 @@ class MainActivity : AppCompatActivity(){
             when (action){
                 ACTION_GATT_CONNECTED -> {
                     mConnected = true
-                    //updateConnectionState(R.string.connected)
                     invalidateOptionsMenu()
                 }
                 ACTION_GATT_DISCONNECTED -> {
                     mConnected = false
-                    //updateConnectionState(R.string.disconnected)
                     invalidateOptionsMenu()
-                    //clearUI()
-                }
-                ACTION_GATT_SERVICES_DISCOVERED -> {
-                    // Show all the supported services and characteristics on the user interface.
-                    displayGattServices(bluetoothLeService!!.supportedGattServices)
                 }
                 ACTION_DATA_AVAILABLE -> {
-                    Log.d("actionDataAvailiabe","s")
-                    //displayData(intent.getStringExtra(BluetoothLeService.EXTRA_DATA))
+
+                }
+                ACTION_GATT_SERVICES_DISCOVERED -> {
+                    bluetoothLeService!!.setCharacteristicNotification(ACTIVITY_UUID,true)
+                    bluetoothLeService!!.setCharacteristicNotification(REAL_TIME_STEP_UUID,true)
+                    bluetoothLeService!!.setCharacteristicNotification(CONTROL_POINT_UUID,true)
                 }
             }
-        }
-    }
-    private fun updateConnectionState(resourceId: Int) {
-        runOnUiThread { mConnectionState!!.setText(resourceId) }
-    }
-
-    private fun displayGattServices(gattServices: List<BluetoothGattService>?) {
-        if (gattServices == null) return
-        var uuid: String?
-        //val unknownServiceString: String = resources.getString(R.string.unknown_service)
-        //val unknownCharaString: String = resources.getString(R.string.unknown_characteristic)
-        val gattServiceData: MutableList<HashMap<String, String>> = mutableListOf()
-        val gattCharacteristicData: MutableList<ArrayList<HashMap<String, String>>> =
-                mutableListOf()
-        mGattCharacteristics =  ArrayList<ArrayList<BluetoothGattCharacteristic>>()
-
-        // Loops through available GATT Services.
-        gattServices.forEach { gattService ->
-            val currentServiceData = HashMap<String, String>()
-            uuid = gattService.uuid.toString()
-            Log.d("Gatt_Servide UUID", uuid!!)
-            //currentServiceData[LIST_NAME] = SampleGattAttributes.lookup(uuid, unknownServiceString)
-            //currentServiceData[LIST_UUID] = uuid
-            gattServiceData += currentServiceData
-
-            val gattCharacteristicGroupData: ArrayList<HashMap<String, String>> = arrayListOf()
-            val gattCharacteristics = gattService.characteristics
-            val charas = ArrayList<BluetoothGattCharacteristic>()
-
-            // Loops through available Characteristics.
-            gattCharacteristics.forEach { gattCharacteristic ->
-                charas.add(gattCharacteristic)
-                val currentCharaData: HashMap<String, String> = hashMapOf()
-                uuid = gattCharacteristic.uuid.toString()
-                Log.d("Gatt_charar UUID", uuid!!)
-                //currentCharaData[LIST_NAME] = SampleGattAttributes.lookup(uuid, unknownCharaString)
-                //currentCharaData[LIST_UUID] = uuid
-                gattCharacteristicGroupData += currentCharaData
-            }
-            mGattCharacteristics!!.add(charas)
-            gattCharacteristicData += gattCharacteristicGroupData
         }
     }
 
@@ -276,6 +240,10 @@ class MainActivity : AppCompatActivity(){
             return mLeDevices.size
         }
 
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+            TODO("Not yet implemented")
+        }
+
         override fun getItem(i: Int): Any {
             return mLeDevices[i]
         }
@@ -284,25 +252,7 @@ class MainActivity : AppCompatActivity(){
             return i.toLong()
         }
 
-        override fun getView(i: Int, view: View?, viewGroup: ViewGroup?): View? {
-            var view = view
-            val viewHolder: ViewHolder
-            // General ListView optimization code.
-            if (view == null) {
-                view = mInflater.inflate(R.layout.activity_main, null)
-                viewHolder = ViewHolder()
-//                viewHolder.deviceAddress = view.findViewById<View>(R.id.multiLine) as TextView
-//                viewHolder.deviceName = view.findViewById<View>(R.id.multiLIne2) as TextView
-                view.tag = viewHolder
-            } else {
-                viewHolder = view.tag as ViewHolder
-            }
-            val device = mLeDevices[i]
-            val deviceName = device.name
-//            if (deviceName != null && deviceName.length > 0) viewHolder.deviceName!!.text = deviceName else viewHolder.deviceName.setText(R.string.unknown_device)
-            viewHolder.deviceAddress!!.text = device.address
-            return view
-        }
+
     }
     internal class ViewHolder {
         var deviceName: TextView? = null
