@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(){
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.login)
+        setContentView(R.layout.activity_main)
         getBluetoothPermissions()
 
         //변수 초기화
@@ -141,16 +141,16 @@ class MainActivity : AppCompatActivity(){
         val permission3 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
         val permission4 = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
         if (permission1 != PackageManager.PERMISSION_GRANTED
-            || permission2 != PackageManager.PERMISSION_GRANTED
-            || permission3 != PackageManager.PERMISSION_GRANTED
-            || permission4 != PackageManager.PERMISSION_GRANTED) {
+                || permission2 != PackageManager.PERMISSION_GRANTED
+                || permission3 != PackageManager.PERMISSION_GRANTED
+                || permission4 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                arrayOf(
-                    Manifest.permission.BLUETOOTH,
-                    Manifest.permission.BLUETOOTH_ADMIN,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION),
-                642)
+                    arrayOf(
+                            Manifest.permission.BLUETOOTH,
+                            Manifest.permission.BLUETOOTH_ADMIN,
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION),
+                    642)
         } else {
             Log.d("DISCOVERING-PERMISSIONS", "Permissions Granted")
         }

@@ -242,7 +242,7 @@ class BluetoothLeService() : Service() {
                 //todo-> dateTime 받아와야함
                 val dateTime: LocalDateTime = LocalDateTime.of(2021, 4, 30, 15, 0,0)
                 data.forEachIndexed{
-                        index,value ->
+                    index,value ->
                     if(index==3 || index==7 || index==11 || index==15 ) {
                         i++
                         if(value.toInt()!=0) {
