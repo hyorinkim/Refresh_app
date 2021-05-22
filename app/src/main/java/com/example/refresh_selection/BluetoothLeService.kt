@@ -240,7 +240,7 @@ class BluetoothLeService() : Service() {
             ACTIVITY_UUID -> {
                 var data = characteristic.value;
                 //todo-> dateTime 받아와야함
-                val dateTime: LocalDateTime = LocalDateTime.of(2021, 4, 30, 15, 0,0)
+                val dateTime: LocalDateTime = LocalDateTime.of(2021, 5, 12, 15, 0,0)
                 data.forEachIndexed{
                     index,value ->
                     if(index==3 || index==7 || index==11 || index==15 ) {
@@ -276,9 +276,10 @@ class BluetoothLeService() : Service() {
     /**
      * 과거 데이터 fetch 시 필요
      */
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     fun setFetchValue() {
         var characteristic = mBluetoothGatt!!.getService(BASE_SERVICE_UUID).getCharacteristic(CONTROL_POINT_UUID);
-        var data = byteArrayOf(1.toByte(),1.toByte(), 229.toUByte().toByte(),7.toByte(),4.toByte(),30.toByte(),12.toByte(), 0.toByte(), 0.toByte(), 24.toByte());
+        var data = byteArrayOf(1.toByte(),1.toByte(), 229.toUByte().toByte(),7.toByte(),5.toByte(),12.toByte(),12.toByte(), 0.toByte(), 0.toByte(), 24.toByte());
         characteristic.value = data;
         mBluetoothGatt!!.writeCharacteristic(characteristic);
     }

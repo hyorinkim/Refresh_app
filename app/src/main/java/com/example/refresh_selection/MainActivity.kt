@@ -4,6 +4,7 @@ import android.Manifest
 import android.bluetooth.*
 import android.content.*
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
@@ -11,13 +12,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.Button
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import org.w3c.dom.Text
 import java.util.*
 
 
@@ -103,8 +103,8 @@ class MainActivity : AppCompatActivity(){
 
         //paring 버튼 이벤트. 페어링을 시작함.
         mBtn!!.setOnClickListener {
-            mBtn?.visibility = View.GONE
-            findViewById<View>(R.id.scrollView).visibility = View.GONE
+//            mBtn?.visibility = View.GONE
+//            findViewById<View>(R.id.scrollView).visibility = View.GONE
             mibandDevice?.name?.let { it1 -> Log.d("mibandDevice", it1) }
             val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
             isBindedService = bindService(gattServiceIntent, mServiceConnection, Context.BIND_AUTO_CREATE)
@@ -158,6 +158,7 @@ class MainActivity : AppCompatActivity(){
 
     private val mServiceConnection = object : ServiceConnection {
 
+        @RequiresApi(Build.VERSION_CODES.ECLAIR)
         override fun onServiceConnected(componentName: ComponentName, service: IBinder) {
             bluetoothLeService = (service as BluetoothLeService.LocalBinder).service
             if (!bluetoothLeService!!.initialize()) {
@@ -189,9 +190,22 @@ class MainActivity : AppCompatActivity(){
                     invalidateOptionsMenu()
                 }
                 ACTION_DATA_AVAILABLE -> {
+                    //데이터를 받을때
+                    val real_step: TextView = findViewById<TextView>(R.id.real_step)
+                    val distance: TextView = findViewById<TextView>(R.id.distance)
+                    if (intent.hasExtra("totalSteps")) {
+                        real_step.text = intent.getIntExtra("totalSteps",1).toString()
+                    } else {
+                        Log.d("data_get","real_step error")
+                    }
+                    if (intent.hasExtra("distance")) {
+                        distance.text = intent.getIntExtra("distance",1).toString()
+                    } else {
+                        Log.d("data_get","distance error")
+                    }
                 }
                 ACTION_GATT_SERVICES_DISCOVERED -> {
-
+                    //서비스 발견했을때
                 }
             }
         }
