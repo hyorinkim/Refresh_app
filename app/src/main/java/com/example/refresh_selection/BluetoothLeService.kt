@@ -43,6 +43,7 @@ class BluetoothLeService() : Service() {
     /**
      * 블루투스 디바이스 GATT 서버 연결
      */
+    @RequiresApi(Build.VERSION_CODES.ECLAIR)
     fun connect(address: String?): Boolean {
         if (mBluetoothAdapter == null || address == null) {
             Log.w(TAG, "BluetoothAdapter not initialized or unspecified address.")
@@ -73,10 +74,12 @@ class BluetoothLeService() : Service() {
         return true
     }
 
-    private val mGattCallback = object : BluetoothGattCallback() {
+    private val mGattCallback = @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    object : BluetoothGattCallback() {
         /**
          * gatt 서버 연결 상태 변화시 실행
          */
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
         override fun onConnectionStateChange(
             gatt: BluetoothGatt,
             status: Int,
@@ -105,6 +108,7 @@ class BluetoothLeService() : Service() {
          * discover services
          * 서비스 발견시 실행
          */
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
             super.onServicesDiscovered(gatt, status)
             val intentAction: String
@@ -117,6 +121,7 @@ class BluetoothLeService() : Service() {
          * write Descriptor
          * 특성의 설명자 작성시 실행
          */
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
         override fun onDescriptorWrite(gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int) {
             super.onDescriptorWrite(gatt, descriptor, status)
             descriptorWriteQueue.remove();
@@ -188,6 +193,7 @@ class BluetoothLeService() : Service() {
     /**
      * 특성에 대한 알림을 on/off
      */
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     fun setCharacteristicNotification(characteristicUUID: UUID, enabled: Boolean) {
         if (mBluetoothAdapter == null || mBluetoothGatt == null) {
             Log.w(TAG, "BluetoothAdapter not initialized")
@@ -259,6 +265,7 @@ class BluetoothLeService() : Service() {
     /**
      * 과거 데이터 fetch 시 필요한 notification on
      */
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     fun setNotificationOn() {
         setCharacteristicNotification(ACTIVITY_UUID,true)
         setCharacteristicNotification(REAL_TIME_STEP_UUID,true)
@@ -268,6 +275,7 @@ class BluetoothLeService() : Service() {
     /**
      * 과거 데이터를 다 받고 notification off 할 때 사용
      */
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     fun setNotificationOff() {
         setCharacteristicNotification(ACTIVITY_UUID,false)
         setCharacteristicNotification(CONTROL_POINT_UUID,false)
@@ -285,6 +293,7 @@ class BluetoothLeService() : Service() {
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     fun initialize(): Boolean {
         if (mBluetoothManager == null) {
             mBluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -314,6 +323,7 @@ class BluetoothLeService() : Service() {
     private val mBinder: IBinder = LocalBinder()
 
     val supportedGattServices: List<BluetoothGattService>?
+        @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
         get() {
             if (mBluetoothGatt == null) return null
 

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -19,7 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class RegisterJoin extends AppCompatActivity {
 
-    private EditText join_id, join_password, join_name, join_birthday, join_sex;
+    private EditText join_id, join_password, join_name, join_birthday;
+    private RadioButton man,woman;
     private Button join_button, check_button;
     private AlertDialog dialog;
     private boolean validate = false;
@@ -34,7 +36,9 @@ public class RegisterJoin extends AppCompatActivity {
         join_password = findViewById( R.id.join_password );
         join_name = findViewById( R.id.join_name );
         join_birthday = findViewById(R.id.join_birthday);
-        join_sex = findViewById(R.id.join_sex);
+//        join_sex = findViewById(R.id.join_sex);
+        man=findViewById(R.id.man);//성별
+        woman=findViewById(R.id.woman);
 
 
         //아이디 중복 체크
@@ -112,7 +116,14 @@ public class RegisterJoin extends AppCompatActivity {
                 final String UserPwd = join_password.getText().toString();
                 final String UserName = join_name.getText().toString();
                 final String UserBirthday = join_birthday.getText().toString();
-                final String UserSex =join_sex.getText().toString();
+                final String UserSex;
+                if(man.isChecked()){
+                    UserSex=man.getText().toString();
+                }else{
+                    UserSex=woman.getText().toString();
+                }
+                  //man이 true 여자가 false니까 하나만 갖고 검사하자.
+//                final String UserSex =join_sex.getText().toString();
 
 
                 //아이디 중복체크 했는지 확인
