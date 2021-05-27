@@ -40,35 +40,37 @@ public class LoginActivity extends AppCompatActivity {
 
 
         login_button = findViewById( R.id.login_button );
-        login_button.setOnClickListener( new View.OnClickListener() {
+        login_button.setOnClickListener( new View.OnClickListener() {//로그인 버튼클릭
             @Override
             public void onClick(View view) {
-                String UserEmail = login_id.getText().toString();
+                boolean exist;
+                String UserId = login_id.getText().toString();
                 String UserPwd = login_password.getText().toString();
-
+//아이디 비번 읽어오기
 //                Intent intent = new Intent( LoginActivity.this, MainActivity.class );
 //                startActivity( intent );
+                
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonObject = new JSONObject( response );
                             boolean success = jsonObject.getBoolean( "success" );
+                            //로그인 할때 성공 줄때 설문조사 존재여부도 같이 넘겨 줄 순 없나? 일단 보류 회원가입에서 설문조사 하는 것
+//                            boolean survey = jsonObject.getBoolean("survey_exist");
 
                             if(success) {//로그인 성공시
-
-                                String UserId = jsonObject.getString( "UserId" );
-                                String UserPwd = jsonObject.getString( "UserPwd" );
-                                String UserName = jsonObject.getString( "UserName" );
-
-                                Toast.makeText( getApplicationContext(), String.format("%s님 환영합니다.", UserName), Toast.LENGTH_SHORT ).show();
-                                Intent intent = new Intent( LoginActivity.this, MainActivity.class );
-
+//                                Toast.makeText( getApplicationContext(), String.format("%s님 환영합니다.", UserName), Toast.LENGTH_SHORT ).show();
+//                                if(survey){//설문조사결과 있을 때 로그인에서 메인화면으로 가기
+                                    Intent intent = new Intent( LoginActivity.this, MainActivity.class );
+                                    startActivity( intent );//로그인 성공해서 메인 화면으로 간다.
+//                                }else{//설문조사 결과 없을때 로그인에서 설문조사 화면으로 가기
+//                                    Intent intent =new Intent(LoginActivity.this,Survey.class);
+//                                    startActivity(intent);
+//                                }
 //                                intent.putExtra( "UserId", UserId );
 //                                intent.putExtra( "UserPwd", UserPwd );
-//                                intent.putExtra( "UserName", UserName );
-
-                                startActivity( intent );
+//                                intent.putExtra( "UserName", UserName );// 전달을 해줘야하는 곳이 있나?
 
                             } else {//로그인 실패시
                                 Toast.makeText( getApplicationContext(), "로그인에 실패하셨습니다.", Toast.LENGTH_SHORT ).show();
@@ -80,9 +82,35 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 };
-                LoginRequest loginRequest = new LoginRequest( UserEmail, UserPwd, responseListener );
+                LoginRequest loginRequest = new LoginRequest( UserId, UserPwd, responseListener );
                 RequestQueue queue = Volley.newRequestQueue( LoginActivity.this );
                 queue.add( loginRequest );
+
+//                //로그인 성공후 설문조사 결과 확인
+//                Response.Listener<String> responseListener_survey = new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        try {
+//                            JSONObject jsonObject = new JSONObject( response );
+//                            exist = jsonObject.getBoolean( "exist" );
+//
+//                            if(exist) {//설문조사 결과 있을 때
+//                                //로그인 성공일때 로그인 화면에서 main화면으로
+//                            } else {//설문조사 결과 없을 때
+//                                //로그인 성공일때 로그인화면에서 초기설문조사
+//
+//                                return;
+//                            }
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                };
+////                LoginRequest loginRequest = new LoginRequest( UserId, responseListener );
+////                RequestQueue queue = Volley.newRequestQueue( LoginActivity.this );
+////                queue.add( loginRequest );
+
 
             }
         });

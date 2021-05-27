@@ -10,7 +10,8 @@ import java.util.Map;
 public class LoginRequest extends StringRequest {
 
     //서버 URL 설정(php 파일 연동)
-    final static private String URL = "http://loclahost:3000";
+    final static private String URL = "http://3.143.147.178:3000/api/user/login";
+    //"http://3.143.147.178:3000/api/user/login";
     private Map<String, String> map;
 
     public LoginRequest(String UserId, String UserPwd, Response.Listener<String> listener) {

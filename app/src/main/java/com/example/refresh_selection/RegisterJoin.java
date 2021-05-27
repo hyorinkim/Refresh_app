@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -15,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import androidx.annotation.IdRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -22,15 +24,63 @@ public class RegisterJoin extends AppCompatActivity {
 
     private EditText join_id, join_password, join_name, join_birthday;
     private RadioButton man,woman;
+    private RadioGroup radio;
     private Button join_button, check_button;
     private AlertDialog dialog;
     private boolean validate = false;
-
+    private String UserSex;
+    static final String[] List_menu={"12:00-14:00","14:00-16:00","16:00-18:00","18:00-20:00","20:00-22:00","22:00-00:00"};
+    static final String[] List_menu2={"","","","","",""};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate( savedInstanceState );
-        setContentView( R.layout.join );
+        setContentView( R.layout.join);
+        //설문조사 먼저?
+        ///////////////////////////////////////////////
+//        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, List_menu) ;
+//
+//        ListView listview = (ListView) findViewById(R.id.survey_act_time) ;
+//        listview.setAdapter(adapter) ;
+//
+//        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            // 코드 계속 ...
+//            @Override
+//            public void onItemClick(AdapterView parent, View v, int position, long id) {
+//
+//                // get TextView's Text.
+//                String strText = (String) parent.getItemAtPosition(position) ;
+//                //배열일까 그냥 하나의 스트링일까... 나중에 바꿀수도
+//
+//
+//                //volley로 데이터베이스에 보냅니다. 회원가입 마지막에서
+//
+//                // TODO : use strText
+//            }
+//        }) ;
+//
+//        //////////////////////장소 카테고리
+//        ArrayAdapter adapter2 = new ArrayAdapter(this, android.R.layout.simple_list_item_1, List_menu) ;
+//
+//        ListView listview2 = (ListView) findViewById(R.id.survey_place) ;
+//        listview2.setAdapter(adapter2) ;
+//
+//        listview2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            // 코드 계속 ...
+//            @Override
+//            public void onItemClick(AdapterView parent, View v, int position, long id) {
+//
+//                // get TextView's Text.
+//                String strText = (String) parent.getItemAtPosition(position) ;
+//                //배열일까 그냥 하나의 스트링일까... 나중에 바꿀수도
+//
+//
+//                //volley로 데이터베이스에 보냅니다. 회원가입 마지막에서
+//
+//                // TODO : use strText
+//            }
+//        }) ;
 
+///////////////////////////////////////////////////////
         //아이디값 찾아주기
         join_id = findViewById( R.id.join_id );
         join_password = findViewById( R.id.join_password );
@@ -39,6 +89,22 @@ public class RegisterJoin extends AppCompatActivity {
 //        join_sex = findViewById(R.id.join_sex);
         man=findViewById(R.id.man);//성별
         woman=findViewById(R.id.woman);
+        radio=(RadioGroup) findViewById(R.id.radio);
+        //라디오 그룹 클릭 리스너
+        RadioGroup.OnCheckedChangeListener radioGroupButtonChangeListener = new RadioGroup.OnCheckedChangeListener() {
+            @Override public void onCheckedChanged(RadioGroup radio, @IdRes int i) {
+                if(i == R.id.man){
+                        UserSex=man.getText().toString();
+                }
+                else if(i == R.id.woman){
+                    UserSex=woman.getText().toString();
+                }
+            }
+        };
+        radio.setOnCheckedChangeListener(radioGroupButtonChangeListener);
+
+
+
 
 
         //아이디 중복 체크
@@ -60,7 +126,7 @@ public class RegisterJoin extends AppCompatActivity {
                     return;
                 }
 //                RequestQueue queue = Volley.newRequestQueue(RegisterJoin.this);
-//                String url = "http://gyfls7748.dothome.co.kr/UserValidation.php";
+//                String url = "http://3.143.147.178:3000/api/user/"+UserId;
 //                // Request a string response from the provided URL.
 //                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
 //                        new Response.Listener<String>() {
@@ -80,7 +146,7 @@ public class RegisterJoin extends AppCompatActivity {
 
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
-//                            Log.d("Response is: "+ response.substring(0,500),"");
+//                            Log.d("Response is: "+ response.substring(0,500),"아이디 중복 확인");
                             if (success) {
                                 AlertDialog.Builder builder = new AlertDialog.Builder(RegisterJoin.this);
                                 dialog = builder.setMessage("사용할 수 있는 아이디입니다.").setPositiveButton("확인", null).create();
@@ -106,7 +172,6 @@ public class RegisterJoin extends AppCompatActivity {
         });
 
 
-
         //회원가입 버튼 클릭 시 수행
         join_button = findViewById( R.id.join_button );
         join_button.setOnClickListener( new View.OnClickListener() {
@@ -116,12 +181,7 @@ public class RegisterJoin extends AppCompatActivity {
                 final String UserPwd = join_password.getText().toString();
                 final String UserName = join_name.getText().toString();
                 final String UserBirthday = join_birthday.getText().toString();
-                final String UserSex;
-                if(man.isChecked()){
-                    UserSex=man.getText().toString();
-                }else{
-                    UserSex=woman.getText().toString();
-                }
+
                   //man이 true 여자가 false니까 하나만 갖고 검사하자.
 //                final String UserSex =join_sex.getText().toString();
 
@@ -153,13 +213,14 @@ public class RegisterJoin extends AppCompatActivity {
                             //회원가입 성공시
 //                            if(UserPwd.equals(PassCk)) {
                                 if (success) {
-
+                                    validate=false;
                                     Toast.makeText(getApplicationContext(), String.format("%s님 가입을 환영합니다.", UserName), Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(RegisterJoin.this, LoginActivity.class);
                                     startActivity(intent);
 
                                     //회원가입 실패시
                                 } else {
+                                    validate=false;
                                     Toast.makeText(getApplicationContext(), "회원가입에 실패하였습니다.", Toast.LENGTH_SHORT).show();
                                     return;
                                 }
@@ -177,7 +238,7 @@ public class RegisterJoin extends AppCompatActivity {
                     }
                 };
 
-                //서버로 Volley를 이용해서 요청
+                //서버로 Volley를 이용해서 요청 설문조사결과도 함께
                 JoinRequest registerRequest = new JoinRequest( UserId, UserPwd, UserName, UserBirthday, UserSex, responseListener);
                 RequestQueue queue = Volley.newRequestQueue( RegisterJoin.this );
                 queue.add( registerRequest );

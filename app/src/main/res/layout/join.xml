@@ -13,9 +13,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="65dp"
+        android:layout_marginTop="50dp"
         android:text="회원가입"
         android:textSize="30sp"
         android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/join_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -78,38 +80,47 @@
         android:textColorHint="#D5D5D5"
         android:textColor="@color/black"
         android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/join_sex"
+        app:layout_constraintBottom_toTopOf="@+id/radio"
         app:layout_constraintStart_toStartOf="@+id/join_password" />
 
-    <EditText
-        android:id="@+id/join_sex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="71dp"
-        android:ems="10"
-        android:hint="성별"
-        android:background="#F6F6F6"
-        android:textColor="@color/black"
-        android:textColorHint="#D5D5D5"
-        android:inputType="text"
-        app:layout_constraintBottom_toTopOf="@+id/join_button"
-        app:layout_constraintStart_toStartOf="@+id/join_birthday" />
+<!--    <EditText-->
+<!--        android:id="@+id/join_sex"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginBottom="71dp"-->
+<!--        android:ems="10"-->
+<!--        android:hint="성별"-->
+<!--        android:background="#F6F6F6"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textColorHint="#D5D5D5"-->
+<!--        android:inputType="text"-->
+<!--        app:layout_constraintBottom_toTopOf="@+id/join_button"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/join_birthday" />-->
 
     <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:ignore="MissingConstraints">
+        android:orientation="horizontal"
+        android:id="@+id/radio"
+        android:layout_marginLeft="96dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/join_birthday"
+        android:layout_marginBottom="10dp"
+        tools:ignore="MissingConstraints"
+        >
         <RadioButton android:id="@+id/man"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:text="남자"
-            android:onClick="onRadioButtonClicked"/>
+            />
         <RadioButton android:id="@+id/woman"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/black"
             android:text="여자"
-            android:onClick="onRadioButtonClicked"/>
+            android:layout_marginLeft="70dp"
+            />
     </RadioGroup>
 
 
@@ -131,11 +142,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="36dp"
-        android:layout_marginTop="71dp"
+        android:layout_marginTop="31dp"
         android:text="취소"
         app:backgroundTint="@color/colorAccent"
         app:layout_constraintStart_toEndOf="@+id/join_button"
-        app:layout_constraintTop_toBottomOf="@+id/join_sex"
+        app:layout_constraintTop_toBottomOf="@+id/radio"
         android:layout_marginLeft="36dp" />
 
     <Button
@@ -144,11 +155,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="96dp"
-        android:layout_marginBottom="140dp"
+        android:layout_marginBottom="10dp"
         android:text="가입"
         app:backgroundTint="@color/colorAccent"
         app:layout_constraintBaseline_toBaselineOf="@+id/delete"
-        app:layout_constraintTop_toBottomOf="@+id/join_sex"
+        app:layout_constraintTop_toBottomOf="@+id/radio"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginLeft="96dp" />
 
