@@ -45,24 +45,25 @@
 
 
         <activity android:name=".LoginActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-        </activity>
-        <activity android:name=".RegisterJoin"></activity>
-
-        <activity android:name=".Survey">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Survey_place"></activity>
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".RegisterJoin"></activity>
 
+        <activity android:name=".Survey"></activity>
+        <activity android:name=".Survey_place"></activity>
+        <activity android:name=".MainActivity">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+        <activity android:name=".ModelClient"></activity>
+        <receiver android:name=".AlarmRecevier"></receiver>
         <service android:name=".BluetoothLeService" android:enabled="true"/>
         <!--        oreo중에 일부기기에 ERROR-->
         <!--        volley라이브러리가 http통신 기술을 사용하기에..oreo 운영체제에서 동작을 막아버림-->
