@@ -8,8 +8,11 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import android.widget.Button
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 
@@ -23,9 +26,11 @@ const val ACTION_GATT_SERVICES_DISCOVERED = "ACTION_GATT_SERVICES_DISCOVERED"
 const val ACTION_DATA_AVAILABLE = "ACTION_DATA_AVAILABLE"
 const val WRITE_DESCRIPTOR = "WRITE_DESCRIPTOR"
 const val ACTIVITY_DATA_FETCH = "ACTIVITY_DATA_FETCH"
+
+val notifications_characteristic:UUID=UUID.fromString("00000010-0000-3512-2118-0009af100700")//? 지우던가..
 val BASE_SERVICE_UUID: UUID = UUID.fromString("0000FEE0-0000-1000-8000-00805f9b34fb")
-val CONTROL_POINT_UUID: UUID = UUID.fromString("00000004-0000-3512-2118-0009af100700")
-val ACTIVITY_UUID: UUID = UUID.fromString("00000005-0000-3512-2118-0009af100700")
+val CONTROL_POINT_UUID: UUID = UUID.fromString("00000004-0000-3512-2118-0009af100700")//fetch관련 흠...? char_fetch
+val ACTIVITY_UUID: UUID = UUID.fromString("00000005-0000-3512-2118-0009af100700")//activiti_data
 val REAL_TIME_STEP_UUID: UUID = UUID.fromString("00000007-0000-3512-2118-0009af100700")
 val DESCRIPTOR_UUID: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 private val descriptorWriteQueue: Queue<BluetoothGattDescriptor> = LinkedList()
@@ -39,7 +44,7 @@ class BluetoothLeService() : Service() {
     private var mConnectionState = STATE_DISCONNECTED
     private var connectionState = STATE_DISCONNECTED
     private var i = 0
-
+    var sum_step=0//for문 밖으로 빼내용
     /**
      * 블루투스 디바이스 GATT 서버 연결
      */
@@ -169,10 +174,10 @@ class BluetoothLeService() : Service() {
                 CONTROL_POINT_UUID -> {
                     var value = characteristic.value
                     if(value[0]==16.toByte() && value[1]==1.toByte() && value[2]==1.toByte()) {
-                        characteristic.value = byteArrayOf(2.toByte())
+                        characteristic.value = byteArrayOf(2.toByte())//0x02
                         mBluetoothGatt!!.writeCharacteristic(characteristic)
                     } else if(value[0]==16.toByte() && value[1]==2.toByte() && value[2]==1.toByte()) {
-                        characteristic.value = byteArrayOf(3.toByte())
+                        characteristic.value = byteArrayOf(3.toByte())//0x03
                         mBluetoothGatt!!.writeCharacteristic(characteristic)
                     }else if(value[0]==16.toByte() && value[1]==3.toByte() && value[2]==1.toByte()) {
                         setNotificationOff()
@@ -189,6 +194,21 @@ class BluetoothLeService() : Service() {
             }
         }
     }
+//    fun fetch_activity_data(characteristicUUID: UUID){
+    //# \x01\x01  key?
+//    # \xe2\x07  2018 year
+//    # \x05      month
+//    # \x03      year
+//    # \x11      hour
+//    # \x2f      minute
+//    # \x00\x08 timezone
+//    value = b'\x01\x01\xe2\x07\x05\x03\x11\x2f\x00\x08'
+//    self.cccd_fetch.write(b'\x01\x00', False)
+//    self.char_fetch.write(value_from_wireshark, False)
+//    for i in range(30):
+//    self.waitForNotifications(1.0)
+//    }
+
 
     /**
      * 특성에 대한 알림을 on/off
@@ -228,6 +248,7 @@ class BluetoothLeService() : Service() {
     /**
      * MainActivity로 브로드캐스트를 날리기 위한 메소드
      */
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun broadcastUpdate(action: String, characteristic: BluetoothGattCharacteristic) {
         val intent = Intent(action)
@@ -242,23 +263,43 @@ class BluetoothLeService() : Service() {
                 intent.putExtra("totalSteps", totalSteps)
                 intent.putExtra("distance", distance)
             }
-            //activity data 도착
+            //activity data 도착 //과거 활동 데이터 도착?
             ACTIVITY_UUID -> {
                 var data = characteristic.value;
                 //todo-> dateTime 받아와야함
+
+                val now = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일 HH시 mm분 ss초")
+                val formatted = now.format(formatter)
+
                 val dateTime: LocalDateTime = LocalDateTime.of(2021, 5, 12, 15, 0,0)
+                //가져오기 시작할 날짜
+
                 data.forEachIndexed{
+                    //1분단위로 저장되어잇는걸 다 보냄
+                    //일주일 단위로 추천
                     index,value ->
                     if(index==3 || index==7 || index==11 || index==15 ) {
+
                         i++
-                        if(value.toInt()!=0) {
+                        if(value.toInt()!=0) {//걸음수가 0인건 안찍혀요
+
+                            sum_step=sum_step+value.toInt()
+                            Log.d("sum_step",sum_step.toString())
                             Log.d("steps",value.toString())
                             Log.d("time", dateTime.plusMinutes(i.toLong()).toString())
+//                            formatted
+//                        dateTime.plusMinutes(i.toLong()).toString()
+                            // 가져올수 있는 개수가 한정되어있을거다...
                         }
                     }
                 }
+
             }
         }
+
+        Log.d("recommend_step", sum_step.toString())
+        intent.putExtra("recommend_step", sum_step/15.toInt())
         sendBroadcast(intent)
     }
 
@@ -286,8 +327,9 @@ class BluetoothLeService() : Service() {
      */
     @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     fun setFetchValue() {
-        var characteristic = mBluetoothGatt!!.getService(BASE_SERVICE_UUID).getCharacteristic(CONTROL_POINT_UUID);
-        var data = byteArrayOf(1.toByte(),1.toByte(), 229.toUByte().toByte(),7.toByte(),5.toByte(),12.toByte(),12.toByte(), 0.toByte(), 0.toByte(), 24.toByte());
+        var characteristic = mBluetoothGatt!!.getService(BASE_SERVICE_UUID).getCharacteristic(CONTROL_POINT_UUID);//gatt 서버랑 연결후 마지막으로 동기화할 날짜를 바이트로 변환후 보낸다
+        //가져올 시작 날짜를 바이트로 넣으면 현재까지의 데이터를 읽어옴
+        var data = byteArrayOf(1.toByte(),1.toByte(), 229.toUByte().toByte(),7.toByte(),5.toByte(),12.toByte(),15.toByte(), 0.toByte(), 0.toByte(), 24.toByte());
         characteristic.value = data;
         mBluetoothGatt!!.writeCharacteristic(characteristic);
     }
