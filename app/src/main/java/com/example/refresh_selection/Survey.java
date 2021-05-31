@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class Survey extends AppCompatActivity {
@@ -19,6 +20,7 @@ public class Survey extends AppCompatActivity {
 //장소 카테고리
     Button next;
     String act_time;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +55,19 @@ public class Survey extends AppCompatActivity {
             String UserId= login_survey.getStringExtra("UserId");
             @Override
             public void onClick(View view) {
+                if(act_time.equals("")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Survey.this);
+                    dialog = builder.setMessage("활동 시간대를 선택해 주세요.").setNegativeButton("확인", null).create();
+                    dialog.show();
+                    return;
+
+                }
                 Intent intent = new Intent(Survey.this,Survey_place.class);
                 intent.putExtra("act_time",act_time);
                 Log.d("survey_act_time",act_time);
                 intent.putExtra("UserId",UserId);
                 Log.d("survey_userId",UserId);
-                Log.d("다음 클릭시","여기 까진 잘되나?");
+                Log.d("다음 클릭시","활동시간대 선택 완료");
                 startActivity(intent);
 
             }
