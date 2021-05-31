@@ -2,6 +2,7 @@ package com.example.refresh_selection;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -9,23 +10,27 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.annotation.IdRes;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import androidx.annotation.IdRes;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 public class RegisterJoin extends AppCompatActivity {
 
     private EditText join_id, join_password, join_name, join_birthday;
     private RadioButton man,woman;
     private RadioGroup radio;
-    private Button join_button, check_button;
+    private Button join_button, check_button ,cancel_button;
     private AlertDialog dialog;
     private boolean validate = false;
     private String UserSex;
@@ -138,36 +143,50 @@ public class RegisterJoin extends AppCompatActivity {
 //                            }
 //                        },null
 //                );
+                RequestQueue queue = Volley.newRequestQueue(RegisterJoin.this);
+                String url = "http://3.143.147.178:3000/api/user/"+UserId;
+                JSONObject testjson = new JSONObject();
+                try {
+                    testjson.put("UserId",UserId);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, testjson, new Response.Listener() {
 
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String response) {
+                    public void onResponse(Object response) {
                         try {
 
-                            JSONObject jsonResponse = new JSONObject(response);
-                            boolean success = jsonResponse.getBoolean("success");
+                                    JSONObject jsonResponse = new JSONObject(response.toString());
+                                    boolean success = jsonResponse.getBoolean("success");
 //                            Log.d("Response is: "+ response.substring(0,500),"아이디 중복 확인");
-                            if (success) {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterJoin.this);
-                                dialog = builder.setMessage("사용할 수 있는 아이디입니다.").setPositiveButton("확인", null).create();
-                                dialog.show();
-                                join_id.setEnabled(false); //아이디값 고정
-                                validate = true; //검증 완료
-                                check_button.setBackgroundColor(getResources().getColor(R.color.colorGray));
-                            }
-                            else {
-                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterJoin.this);
-                                dialog = builder.setMessage("이미 존재하는 아이디입니다.").setNegativeButton("확인", null).create();
-                                dialog.show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                                    if (success) {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(RegisterJoin.this);
+                                        dialog = builder.setMessage("사용할 수 있는 아이디입니다.").setPositiveButton("확인", null).create();
+                                        dialog.show();
+                                        join_id.setEnabled(false); //아이디값 고정
+                                        validate = true; //검증 완료
+                                        check_button.setBackgroundColor(getResources().getColor(R.color.colorGray));
+                                    }
+                                    else {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(RegisterJoin.this);
+                                        dialog = builder.setMessage("이미 존재하는 아이디입니다.").setNegativeButton("확인", null).create();
+                                        dialog.show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                        Log.d("ddd","ddd");
                     }
-                };
-                ValidateRequest validateRequest = new ValidateRequest(UserId, responseListener);
-                RequestQueue queue = Volley.newRequestQueue(RegisterJoin.this);
-                queue.add(validateRequest);
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                });
+                request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                queue.add(request);
+
             }
         });
 
@@ -202,12 +221,24 @@ public class RegisterJoin extends AppCompatActivity {
                     return;
                 }
 
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
+                RequestQueue queue = Volley.newRequestQueue(RegisterJoin.this);
+                String url = "http://3.143.147.178:3000/api/user/register";
+                JSONObject testjson = new JSONObject();
+                try {
+                    testjson.put("UserId",UserId);
+                    testjson.put("UserPwd",UserPwd);
+                    testjson.put("UserName",UserName);
+                    testjson.put("UserBirthday",UserBirthday);
+                    testjson.put("UserSex",UserSex);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, testjson, new Response.Listener() {
 
+                    @Override
+                    public void onResponse(Object response) {
                         try {
-                            JSONObject jsonObject = new JSONObject( response );
+                            JSONObject jsonObject = new JSONObject( response.toString() );
                             boolean success = jsonObject.getBoolean( "success" );
 
                             //회원가입 성공시
@@ -234,14 +265,125 @@ public class RegisterJoin extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                                Log.d("ddd","ddd");
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
 
                     }
-                };
-
-                //서버로 Volley를 이용해서 요청 설문조사결과도 함께
-                JoinRequest registerRequest = new JoinRequest( UserId, UserPwd, UserName, UserBirthday, UserSex, responseListener);
-                RequestQueue queue = Volley.newRequestQueue( RegisterJoin.this );
-                queue.add( registerRequest );
+                });
+                request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+                queue.add(request);
+//                RequestQueue queue = Volley.newRequestQueue(RegisterJoin.this);
+//                String url = "http://3.143.147.178:3000/api/user/register";
+////                // Request a string response from the provided URL.
+//                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+//                        new Response.Listener<String>() {
+//                            @Override
+//                            public void onResponse(String response) {
+//                                try {
+//
+//                                    JSONObject jsonResponse = new JSONObject(response);
+//                                    boolean success = jsonResponse.getBoolean("success");
+////                            Log.d("Response is: "+ response.substring(0,500),"아이디 중복 확인");
+//                                    if (success) {
+//                                        AlertDialog.Builder builder = new AlertDialog.Builder(RegisterJoin.this);
+//                                        dialog = builder.setMessage("사용할 수 있는 아이디입니다.").setPositiveButton("확인", null).create();
+//                                        dialog.show();
+//                                        join_id.setEnabled(false); //아이디값 고정
+//                                        validate = true; //검증 완료
+//                                        check_button.setBackgroundColor(getResources().getColor(R.color.colorGray));
+//                                    }
+//                                    else {
+//                                        AlertDialog.Builder builder = new AlertDialog.Builder(RegisterJoin.this);
+//                                        dialog = builder.setMessage("이미 존재하는 아이디입니다.").setNegativeButton("확인", null).create();
+//                                        dialog.show();
+//                                    }
+//                                } catch (JSONException e) {
+//                                    e.printStackTrace();
+//                                }
+//                                Log.d("ddd","ddd");
+//                            }
+//                        },new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        error.printStackTrace();
+//                    }
+//                }){
+//                    @Override
+//                    protected Map<String, String> getParams() throws AuthFailureError {
+//                        Map<String, String> params = new HashMap<>();
+//                        params.put("UserId", UserId);
+//                        params.put("UserPwd",UserPwd);
+//                        params.put("UserName",UserName);
+//                        params.put("UserBirthday",UserBirthday);
+//                        params.put("UserSex",UserSex);
+//                        Log.d("join_request",UserId);
+//                        Log.d("join_request",UserPwd);
+//                        Log.d("join_request",UserSex);
+//                        Log.d("join_request",UserName);
+//                        Log.d("join_request",UserBirthday);
+//                        return params;
+//                    }
+//                    @Override
+//                    public Map<String, String> getHeaders() throws AuthFailureError {
+//                        Map<String,String> headers = new HashMap<String, String>();
+//                        // Removed this line if you dont need it or Use application/json
+//                        // headers.put("Content-Type", "application/x-www-form-urlencoded");
+//                        return headers;
+//                    }
+//                };
+//
+//                queue.add( stringRequest );
+//                Response.Listener<String> responseListener = new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//
+//                        try {
+//                            JSONObject jsonObject = new JSONObject( response );
+//                            boolean success = jsonObject.getBoolean( "success" );
+//
+//                            //회원가입 성공시
+////                            if(UserPwd.equals(PassCk)) {
+//                                if (success) {
+//                                    validate=false;
+//                                    Toast.makeText(getApplicationContext(), String.format("%s님 가입을 환영합니다.", UserName), Toast.LENGTH_SHORT).show();
+//                                    Intent intent = new Intent(RegisterJoin.this, LoginActivity.class);
+//                                    startActivity(intent);
+//
+//                                    //회원가입 실패시
+//                                } else {
+//                                    validate=false;
+//                                    Toast.makeText(getApplicationContext(), "회원가입에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+//                                    return;
+//                                }
+////                            } else {
+////                                AlertDialog.Builder builder = new AlertDialog.Builder(RegisterJoin.this);
+////                                dialog = builder.setMessage("비밀번호가 동일하지 않습니다.").setNegativeButton("확인", null).create();
+////                                dialog.show();
+////                                return;
+////                            }
+//
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//
+//                    }
+//                };
+//
+//                //서버로 Volley를 이용해서 요청 설문조사결과도 함께
+//                JoinRequest registerRequest = new JoinRequest( UserId, UserPwd, UserName, UserBirthday, UserSex, responseListener);
+//                RequestQueue queue = Volley.newRequestQueue( RegisterJoin.this );
+//                queue.add( registerRequest );
+            }
+        });
+        cancel_button=findViewById(R.id.cancel_button);
+        cancel_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =new Intent(RegisterJoin.this,LoginActivity.class);
+                startActivity(intent);
             }
         });
     }
