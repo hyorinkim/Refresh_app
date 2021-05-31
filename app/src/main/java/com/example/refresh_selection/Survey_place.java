@@ -10,8 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -19,17 +17,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 public class Survey_place extends AppCompatActivity {
 
     static final String[] List_menu2={"카페", "음식점", "문화시설", "관광명소", "대형마트","공원"};
     Button commit;
+    private AlertDialog dialog;
     ArrayList<String> place;
 
     @Override
@@ -58,12 +59,11 @@ public class Survey_place extends AppCompatActivity {
                     }
                 }
                 //배열
-                // TODO : use strText
             }
         });
         //확인 버튼 눌렀을때 활동시간대, 장소카테고리 설문조사결과 surveyRequest로 넘겨줌
 
-        //volley로 데이터베이스에 보냅니다. 회원가입 마지막에서?
+        //volley로 데이터베이스에 보냅니다.
         //서버로 Volley를 이용해서 요청 설문조사결과도 함께
         commit = findViewById(R.id.survey_commit);
         commit.setOnClickListener(new View.OnClickListener() {
@@ -74,115 +74,57 @@ public class Survey_place extends AppCompatActivity {
                 String UserId= intent.getStringExtra("UserId");
                 Log.d("act_time",act_time);
                 Log.d("UserId",UserId);
-
-                RequestQueue queue = Volley.newRequestQueue(Survey_place.this);
-                String url = "http://3.143.147.178:3000/api/research";
-                JSONObject testjson = new JSONObject();
-                try {
-                    String data= new Gson().toJson(place);
-                    testjson.put("ActiveTime",act_time);
-                    testjson.put("UserId",UserId);
-                    testjson.put("PreferPlace",place.toArray());
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if(place.isEmpty()){//장소 선택 안 했을때
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Survey_place.this);
+                    dialog = builder.setMessage("선호 장소를 선택해 주세요.").setNegativeButton("확인", null).create();
+                    dialog.show();
+                    return;
                 }
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, testjson, new Response.Listener() {
+                survey(act_time, UserId);
 
-                    @Override
-                    public void onResponse(Object response) {
-                        try {
-                                    JSONObject jsonObject = new JSONObject(response.toString());
-                                    boolean success = jsonObject.getBoolean("success");
 
-                                    if (success) {//설문조사가 잘 저장됨
-                                        Intent intent = new Intent(Survey_place.this, MainActivity.class);
-                                        startActivity(intent);//설문조사 저장후 메인으로 넘어감
-                                    } else {//설문조사가 안 저장됨
-                                        Log.d("survey 저장안됨", success + "");
-                                        return;
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                        Log.d("ddd","ddd");
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                });
-                request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-                queue.add(request);
-
-//                RequestQueue queue = Volley.newRequestQueue(Survey_place.this);
-//                String url = "http://3.143.147.178:3000/api/research";
-////                // Request a string response from the provided URL.
-//                StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-//                        new Response.Listener<String>() {
-//                            @Override
-//                            public void onResponse(String response) {
-//                                // Display the first 500 characters of the response string.
-////                                textView.setText("Response is: "+ response.substring(0,500));
-//                                try {
-//                                    JSONObject jsonObject = new JSONObject(response);
-//                                    boolean success = jsonObject.getBoolean("success");
-//
-//                                    if (success) {//설문조사가 잘 저장됨
-//                                        Intent intent = new Intent(Survey_place.this, MainActivity.class);
-//                                        startActivity(intent);//설문조사 저장후 메인으로 넘어감
-//                                    } else {//설문조사가 안 저장됨
-//                                        Log.d("survey 저장안됨", success + "");
-//                                        return;
-//                                    }
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//                                Log.d("ddd","ddd");
-//                            }
-//                        },new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        error.printStackTrace();
-//                    }
-//                }){
-//                    @Override
-//                    protected Map<String, String> getParams() throws AuthFailureError {
-//                        Map<String, String> params = new HashMap<>();
-//                        String data= new Gson().toJson(place);
-//                        params.put("UserId",UserId);
-//                        params.put("ActiveTime",act_time);
-//                        params.put("PreferPlace",data);
-//                        return params;
-//                    }
-//                };
-//                queue.add( stringRequest );
-//                Response.Listener<String> responseListener = new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        try {
-//                            JSONObject jsonObject = new JSONObject(response);
-//                            boolean success = jsonObject.getBoolean("success");
-//
-//                            if (success) {//설문조사가 잘 저장됨
-//                                Intent intent = new Intent(Survey_place.this, MainActivity.class);
-//                                startActivity(intent);//설문조사 저장후 메인으로 넘어감
-//                            } else {//설문조사가 안 저장됨
-//                                Log.d("survey 저장안됨", success + "");
-//                                return;
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                    }
-//                };
-
-//                SurveyRequest surveyRequest = new SurveyRequest(UserId,act_time, place, responseListener);//여기에 로그인 성공한 아이디도 같이 줘야하나?
-//                RequestQueue queue = Volley.newRequestQueue(Survey_place.this);
-//                queue.add(surveyRequest);
             }
         });
+    }
+
+    private void survey(String act_time, String userId) {
+        RequestQueue queue = Volley.newRequestQueue(Survey_place.this);
+        String url = "http://3.143.147.178:3000/api/research";
+        JSONObject testjson = new JSONObject();
+        try {
+            testjson.put("ActiveTime",act_time);
+            testjson.put("UserId", userId);
+            testjson.put("PreferPlace",place.toArray());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, url, testjson, new Response.Listener() {
+
+            @Override
+            public void onResponse(Object response) {
+                try {
+                            JSONObject jsonObject = new JSONObject(response.toString());
+                            boolean success = jsonObject.getBoolean("success");
+
+                            if (success) {//설문조사가 잘 저장됨 메인화면으로 이동
+                                Intent intent = new Intent(Survey_place.this, MainActivity.class);
+                                startActivity(intent);//설문조사 저장후 메인으로 넘어감
+                            } else {//설문조사가 안 저장됨
+                                Log.d("survey 저장안됨", success + "");
+                                return;
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        queue.add(request);
     }
 
 }
