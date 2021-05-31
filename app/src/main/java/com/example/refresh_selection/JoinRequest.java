@@ -10,14 +10,11 @@ import java.util.Map;
 
 public class JoinRequest extends StringRequest{
 
-    //서버 URL 설정(php 파일 연동)
+    //서버 URL 설정
     final static private String URL = "http://3.143.147.178:3000/api/user/register";
-            //"http://gyfls7748.dothome.co.kr/Register.php";
             //"http://3.143.147.178:3000/api/user/register";
 //    private Map<String, String> map;
     private Map<String,String> map;
-//    private Map<String, Boolean> map2;
-    //private Map<String, String>parameters;
 
     public JoinRequest(String UserId, String UserPwd, String UserName,String UserBirthday, String UserSex, Response.Listener<String> listener) {
         super(Method.POST, URL, listener, null);
