@@ -126,6 +126,16 @@ public class RegisterJoin extends AppCompatActivity {
                     dialog.show();
                     return;
                 }
+                Pattern regex= Pattern.compile("[0-9_]{6}");
+                Matcher BirthdayMatcher =regex.matcher(UserBirthday);
+
+                if(!BirthdayMatcher.matches()){//생일 양식 체크
+                    AlertDialog.Builder builder = new AlertDialog.Builder(RegisterJoin.this);
+                    dialog = builder.setMessage("생일은 ex)1999 01 01-> 990101 6자리 입니다.").setPositiveButton("확인", null).create();
+                    dialog.show();
+                    Log.d("생일 양식 체크","");
+                    return;
+                }
 
 
                 //한 칸이라도 입력 안했을 경우 아이디,비밀번호,이름,생일,성별
