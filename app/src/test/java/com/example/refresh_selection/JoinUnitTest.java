@@ -7,6 +7,7 @@ import static junit.framework.TestCase.assertEquals;
 public class JoinUnitTest {
     RegisterJoin Rj =new RegisterJoin();
     LoginActivity LA= new LoginActivity();
+
     @Test
     public void JoinTrue() {
 

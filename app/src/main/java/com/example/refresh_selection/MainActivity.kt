@@ -299,10 +299,15 @@ class MainActivity : AppCompatActivity(){
 //                    }
                 }
                 ACTIVITY_DATA_FETCH->{
-                    val recommend_step:TextView= findViewById<TextView>(R.id.recommend_step)
-                    recommend_step.text = "추천 걸음수 : "+intent.getIntExtra("recommend_step",1).toString()
+//                    val recommend_step:TextView= findViewById<TextView>(R.id.recommend_step)
+//                    recommend_step.text = "추천 걸음수 : "+intent.getIntExtra("recommend_step",1).toString()
 //                    recommend_step.text = "추천 걸음수 : "+b.sum_step/15
                     //Log.d("b.sum_step",b.sum_step.toString())
+                }
+                ACTIVITY_DATA_SEND_OVER->{//intent action이 이거 일때
+                    val recommend_step:TextView= findViewById<TextView>(R.id.recommend_step)
+                    recommend_step.text = "추천 걸음수 : "+intent.getIntExtra("recommend_step",1).toString()
+                    Log.d("data_get","마지막 추천 걸음수");
                 }
                 ACTION_GATT_SERVICES_DISCOVERED -> {
                     //서비스 발견했을때
@@ -414,6 +419,7 @@ class MainActivity : AppCompatActivity(){
             intentFilter.addAction(ACTION_GATT_SERVICES_DISCOVERED)
             intentFilter.addAction(ACTION_DATA_AVAILABLE)
             intentFilter.addAction(ACTIVITY_DATA_FETCH)
+            intentFilter.addAction(ACTIVITY_DATA_SEND_OVER)
             return intentFilter
         }
     }

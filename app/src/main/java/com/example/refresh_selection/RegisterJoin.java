@@ -10,6 +10,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.annotation.IdRes;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -23,10 +27,6 @@ import org.json.JSONObject;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import androidx.annotation.IdRes;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 public class RegisterJoin extends AppCompatActivity {
 
@@ -165,9 +165,9 @@ public class RegisterJoin extends AppCompatActivity {
 
     protected boolean checkNull(String userId, String userPwd, String userName, String userBirthday, String userSex) {
         if (userId.equals("") || userPwd.equals("") || userName.equals("")|| userBirthday.equals("")||userSex.equals("")) {
-//            AlertDialog.Builder builder = new AlertDialog.Builder(RegisterJoin.this);
-//            dialog = builder.setMessage("모두 입력해주세요.").setNegativeButton("확인", null).create();
-//            dialog.show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(RegisterJoin.this);
+            dialog = builder.setMessage("모두 입력해주세요.").setNegativeButton("확인", null).create();
+            dialog.show();
             return true;
         }
         return false;
