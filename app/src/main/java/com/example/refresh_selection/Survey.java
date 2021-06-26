@@ -55,7 +55,7 @@ public class Survey extends AppCompatActivity {
             String UserId= login_survey.getStringExtra("UserId");
             @Override
             public void onClick(View view) {
-                if(act_time.equals("")){
+                if(act_time==null){
                     AlertDialog.Builder builder = new AlertDialog.Builder(Survey.this);
                     dialog = builder.setMessage("활동 시간대를 선택해 주세요.").setNegativeButton("확인", null).create();
                     dialog.show();
