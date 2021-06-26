@@ -11,6 +11,7 @@ import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import java.io.IOException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -263,7 +264,8 @@ class BluetoothLeService() : Service() {
                 var nowdate = LocalDateTime.now()
                 nowdate=nowdate.minusDays(7)
 
-                val dateTime: LocalDateTime =nowdate
+               // val dateTime: LocalDateTime =LocalDateTime.of(2021, 5, 28, 0, 0,0)
+                    //nowdate
                     // LocalDateTime.of(2021, 5, 23, 15, 0,0)
                 //가져오기 시작할 날짜
 
@@ -279,7 +281,7 @@ class BluetoothLeService() : Service() {
                             sum_step=sum_step+value.toInt()
                             Log.d("sum_step",sum_step.toString())
                             Log.d("steps",value.toString())
-                            Log.d("time", dateTime.plusMinutes(i.toLong()).toString())
+                           // Log.d("time", dateTime.plusMinutes(i.toLong()).toString())
 //                            formatted
 //                        dateTime.plusMinutes(i.toLong()).toString()
                             // 가져올수 있는 개수가 한정되어있을거다...
@@ -290,13 +292,26 @@ class BluetoothLeService() : Service() {
             }
             CONTROL_POINT_UUID->{
                 Log.d("recommend_step", sum_step.toString())
-                intent.putExtra("recommend_step", (sum_step/7.toInt()/100)*100)
+
+                if((sum_step/7.toInt()/100)*100>8000){
+                    intent.putExtra("recommend_step", (sum_step/7.toInt()/100)*100)
+                }else if((sum_step/7.toInt()/100)*100>6000){//8000~6001
+                    intent.putExtra("recommend_step", 8000)
+                }else if((sum_step/7.toInt()/100)*100>4000){//6000~4001
+                    intent.putExtra("recommend_step", (sum_step/7.toInt()/100)*100+1000)
+                }else if((sum_step/7.toInt()/100)*100>2000){//4000~2001
+                    intent.putExtra("recommend_step", (sum_step/7.toInt()/100)*100+1500)
+                }else if((sum_step/7.toInt()/100)*100>=0){//2000~0
+                    intent.putExtra("recommend_step", (sum_step/7.toInt()/100)*100+2000)
+                }
+                //(sum_step/7.toInt()/100)*100)
             }
 
         }
 
         sendBroadcast(intent)
     }
+
 
     /**
      * 과거 데이터 fetch 시 필요한 notification on
@@ -325,14 +340,21 @@ class BluetoothLeService() : Service() {
         var characteristic = mBluetoothGatt!!.getService(BASE_SERVICE_UUID).getCharacteristic(CONTROL_POINT_UUID);//gatt 서버랑 연결후 마지막으로 동기화할 날짜를 바이트로 변환후 보낸다
         //가져올 시작 날짜를 바이트로 넣으면 현재까지의 데이터를 읽어옴
         var nowdate = LocalDate.now()
-        nowdate=nowdate.minusDays(7)
+        nowdate=nowdate.minusDays(6)
 
 
         var time=LocalTime.now()
 
 
         var year=nowdate.year.toInt()
-        var data= byteArrayOf(1.toByte(),1.toByte(),(year/100).toByte(),(year%100).toByte() ,nowdate.monthValue.toByte(),nowdate.dayOfMonth.toByte(),time.hour.toByte(),time.minute.toByte() ,time.second.toByte(),24.toByte())
+        Log.d("동기화 월",nowdate.monthValue.toString())
+        Log.d("동기화 일",nowdate.dayOfMonth.toString())
+        //2021년
+        var y = year/256
+        var ear = year%256
+
+        var data= byteArrayOf(1.toByte(),1.toByte(),ear.toUByte().toByte(),y.toByte() ,nowdate.monthValue.toByte(),nowdate.dayOfMonth.toByte(),0.toByte(),0.toByte() ,0.toByte(),256.toByte())
+//        var data= byteArrayOf(1.toByte(),1.toByte(),(year/100).toByte(),(year%100).toByte() ,nowdate.monthValue.toByte(),nowdate.dayOfMonth.toByte(),time.hour.toByte(),time.minute.toByte() ,time.second.toByte(),24.toByte())
         //var data = byteArrayOf(1.toByte(),1.toByte(), 229.toUByte().toByte(),7.toByte(),5.toByte(),23.toByte(),15.toByte(), 0.toByte(), 0.toByte(), 24.toByte());
         characteristic.value = data;
         mBluetoothGatt!!.writeCharacteristic(characteristic);
@@ -375,5 +397,21 @@ class BluetoothLeService() : Service() {
 
             return mBluetoothGatt!!.services
         }
+
+//    fun writeAllData( filePath: String ,fileName: String, dataList: ArrayList<Array<String>>) {
+//        try {
+//            FileWriter(File("$filePath/$fileName")).use {
+//                fw  ->
+//                // writeAll()을 이용한 리스트 데이터 등록
+//                CSVWriter(fw).use { it.writeAll(dataList)
+//                }
+//            }
+//        } catch (e: IOException) {
+//            if (BuildConfig.DEBUG) {
+//                e.printStackTrace()
+//            }
+//        }
+//    }
+
 
 }
