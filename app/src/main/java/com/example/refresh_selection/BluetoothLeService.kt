@@ -251,7 +251,7 @@ class BluetoothLeService() : Service() {
             REAL_TIME_STEP_UUID -> {
                 val data = characteristic.value;
                 val totalSteps = (data[1].toInt().and(255)) or (((data[2].toInt().and(255)).shl(8)))
-                val distance = (data[5].toInt().and(255)) or (data[6].toInt().and(255)) or (data[7].toInt().and(16711680)) or (data[8].toInt().and(255)).shl(8)
+                val distance = (data[5].toInt().and(255)) or((data[6].toInt().and(255)).shl(8)) or (data[7].toInt().and(16711680)) or (data[8].toInt().and(255)).shl(24)
                 Log.d("totalSteps",totalSteps.toString())
                 Log.d("distance",distance.toString())
                 intent.putExtra("totalSteps", totalSteps)
