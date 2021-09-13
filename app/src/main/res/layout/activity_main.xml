@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
 <!--    <View-->
@@ -36,122 +37,22 @@
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintTop_toTopOf="parent"-->
 <!--    />-->
-
-
-
-
-    <ScrollView
-        android:id="@+id/scrollView"
-        android:layout_width="418dp"
-        android:layout_height="275dp"
-        android:layout_marginTop="236dp"
-        android:background="#C3131313"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+    <TextView
+        android:id="@+id/main_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="REFRESH"
+        android:textColor="@color/colorPrimary"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="MissingConstraints" />
 
-        <LinearLayout
-            android:id="@+id/linearlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="visible"
-            tools:visibility="visible">
 
-            <TextView
-                android:id="@+id/distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="70dp"
-                android:layout_marginLeft="70dp"
-                android:layout_marginBottom="27dp"
-                android:textColor="@color/white"
-                android:text="distnace"
-                android:textSize="30sp"
-                app:layout_constraintBottom_toBottomOf="@+id/view"
-                app:layout_constraintStart_toStartOf="@+id/view"
-                 />
-
-            <TextView
-                android:id="@+id/real_step"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="70dp"
-                android:layout_marginLeft="70dp"
-                android:layout_marginBottom="20dp"
-                android:textColor="@color/white"
-                android:text="갖고온 걸음수"
-                android:textSize="30sp"
-                app:layout_constraintBottom_toBottomOf="@+id/view"
-                app:layout_constraintStart_toStartOf="@+id/view"
-                 />
-
-            <TextView
-                android:id="@+id/deviceName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="70dp"
-                android:layout_marginLeft="70dp"
-                android:layout_marginTop="20dp"
-                android:textColor="@color/white"
-                android:text="기기이름"
-                android:textSize="24sp"
-                 />
-
-            <TextView
-                android:id="@+id/address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="70dp"
-                android:layout_marginLeft="70dp"
-                android:layout_marginTop="20dp"
-                android:textColor="@color/white"
-                android:text="mac 주소"
-                android:textSize="24sp"
-                 />
-            <TextView
-                android:id="@+id/recommend_step"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="70dp"
-                android:layout_marginLeft="70dp"
-                android:layout_marginTop="20dp"
-                android:textColor="@color/white"
-                android:text="추천 걸음수"
-                android:textSize="24sp"
-                />
-
-            <Button
-                android:id="@+id/pairBt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="pairing"
-                android:backgroundTint="@color/colorAccent"
-                android:visibility="invisible"
-                app:layout_constraintStart_toStartOf="@id/linearlayout"
-                app:layout_constraintTop_toBottomOf="@id/recommend_step"
-                android:layout_marginBottom="30dp"
-                android:layout_marginLeft="300dp" />
-
-            <Button
-                android:id="@+id/showBt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="show"
-                android:backgroundTint="@color/colorAccent"
-                android:visibility="visible"
-                app:layout_constraintEnd_toStartOf="@id/pairBt"
-                app:layout_constraintTop_toBottomOf="@id/recommend_step"
-                android:layout_marginBottom="90dp"
-                android:layout_marginLeft="200dp" />
-
-        </LinearLayout>
-    </ScrollView>
-
-<!--    <androidx.constraintlayout.widget.Guideline-->
+    <!--    <androidx.constraintlayout.widget.Guideline-->
 <!--        android:id="@+id/guideline2"-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
@@ -159,29 +60,163 @@
 <!--        app:layout_constraintGuide_begin="20dp" />-->
 
 
+    <!--    <LinearLayout-->
+
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical"-->
+<!--        android:visibility="visible"-->
+<!--        android:layout_marginTop="40dp"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/main_title"-->
+<!--        tools:ignore="MissingConstraints"-->
+<!--        tools:visibility="visible">-->
+
+<!--     -->
+<!--       -->
+<!--    </LinearLayout>-->
+
+    <RelativeLayout
+        android:id="@+id/linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="50dp"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/main_title"
+        tools:ignore="MissingConstraints"
+     >
+
+
+        <TextView
+            android:id="@+id/medal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:text="칭호를 획득해보세요!"
+            android:textStyle="bold"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="25sp" />
+
+        <TextView
+            android:id="@+id/real_step"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_below="@+id/medal"
+            android:text="갖고온 걸음수"
+            android:textColor="@color/colorGray"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/slash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/real_step"
+            android:layout_below="@+id/medal"
+            android:text="/"
+            android:textColor="@color/colorGray"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/recommend_step"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/real_step"
+            android:layout_below="@+id/medal"
+            android:text="추천 걸음수"
+            android:textColor="@color/colorGray"
+            android:textSize="20sp" />
+
+        <com.github.mikephil.charting.charts.HorizontalBarChart
+           android:id="@+id/barChart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true" />
+        <Button
+            android:id="@+id/showBt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="60dp"
+            android:backgroundTint="@color/black"
+            android:text="show"
+            android:visibility="invisible" />
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/distance"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="70dp"-->
+        <!--            android:layout_marginLeft="70dp"-->
+        <!--            android:layout_marginBottom="27dp"-->
+        <!--            android:text="distnace"-->
+        <!--            android:textColor="@color/colorPrimary"-->
+        <!--            android:textSize="30sp" />-->
+
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/deviceName"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="70dp"-->
+        <!--            android:layout_marginLeft="70dp"-->
+        <!--            android:layout_marginTop="20dp"-->
+        <!--            android:text="기기이름"-->
+        <!--            android:textColor="@color/colorPrimary"-->
+        <!--            android:textSize="24sp" />-->
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/address"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginStart="70dp"-->
+        <!--            android:layout_marginLeft="70dp"-->
+        <!--            android:layout_marginTop="20dp"-->
+        <!--            android:text="mac 주소"-->
+        <!--            android:textColor="@color/colorPrimary"-->
+        <!--            android:textSize="24sp" />-->
+
+    </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
-        android:layout_width="129dp"
-        android:layout_height="140dp"
-        android:layout_marginRight="132dp"
-        android:layout_marginTop="64dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="132dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="44dp"
+        android:backgroundTint="@color/colorPrimary"
         android:text="SCAN"
-        android:backgroundTint="@color/colorAccent"
         android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/progressBar"
         app:layout_constraintStart_toStartOf="@+id/progressBar"
-        app:layout_constraintTop_toTopOf="@+id/progressBar"
-        android:layout_marginLeft="16dp" />
+        app:layout_constraintTop_toTopOf="@+id/progressBar" />
+
+    <Button
+        android:id="@+id/pairBt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:layout_marginLeft="5dp"
+        android:text="pairing"
+        android:visibility="invisible"
+        app:layout_constraintBaseline_toBaselineOf="@id/scan"
+        app:layout_constraintBottom_toTopOf="@+id/linearlayout"
+        app:layout_constraintStart_toEndOf="@id/progressBar"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
