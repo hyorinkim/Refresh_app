@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -92,14 +93,14 @@ public class LoginActivity extends AppCompatActivity {
 
                             } else {//로그인 실패시
                                 loginCheck=false;
-                                //Toast.makeText( getApplicationContext(), "로그인에 실패하셨습니다.", Toast.LENGTH_SHORT ).show();
+                                Toast.makeText( getApplicationContext(), "아이디와 패스워드를 다시 확인해주세요.", Toast.LENGTH_SHORT ).show();
                                 return;
                             }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                Log.d("ddd","ddd");
+                Log.d("로그인 성공","로그인 성공 확인");
             }
         }, new Response.ErrorListener() {
             @Override
