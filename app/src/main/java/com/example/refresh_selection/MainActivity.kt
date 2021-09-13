@@ -4,6 +4,7 @@ import android.Manifest
 import android.bluetooth.*
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -16,9 +17,14 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 private const val SCAN_PERIOD: Long = 10000
@@ -36,11 +42,17 @@ class MainActivity : AppCompatActivity(){
     private var isBindedService = false
     private var setServiceNotification: List<UUID>? = null;
 
-    ////은바니
+  //barChart 구성요소
+
+    lateinit var barlist:ArrayList<BarEntry>
+    lateinit var lineDataSet: BarDataSet
+    lateinit var barData:BarData
+
+    //?
     private val COL_DATE: Int = 0
     private val COL_TIME = 1
     private val COL_STEPS = 2
-////
+//
     private fun PackageManager.missingSystemFeature(name: String): Boolean = !hasSystemFeature(name)
     private val bluetoothAdapter: BluetoothAdapter? by lazy(LazyThreadSafetyMode.NONE) {
         val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -74,9 +86,9 @@ class MainActivity : AppCompatActivity(){
 
         //변수 초기화
         handler = Handler()
-        mBtn = findViewById<Button>(R.id.pairBt)
-        scanBtn = findViewById<Button>(R.id.scan)
-        showBt=findViewById<Button>(R.id.showBt)
+        mBtn = findViewById<Button>(R.id.pairBt)//디바이스 다시 페어링하는 버튼
+        scanBtn = findViewById<Button>(R.id.scan)//디바이스를 찾는 버튼
+        showBt=findViewById<Button>(R.id.showBt)//모델 화면으로 이동 버튼
         leDeviceListAdapter = LeDeviceListAdapter()
 
         packageManager.takeIf { it.missingSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) }?.also {
@@ -137,67 +149,35 @@ class MainActivity : AppCompatActivity(){
             //설문조사 저장후 메인으로 넘어감
 
         }
-//        //추천 걸음수
-//        try {
-//            val manager = assets
-//            val `in`: InputStream = manager.open("test.csv")
-//            val cooked: ArrayList<Data> = parse(`in`)!!
-//            var all_steps = ""
-//            if (cooked != null) {
-//                for (piece in cooked) {
-//                    all_steps += piece.steps.toString() + " "
-//                }
-//            }
-//            println(all_steps)
-//            val all_steps_strArr = all_steps.split(" ").toTypedArray()
-//            val all_steps_intArr =
-//                Arrays.stream(all_steps_strArr).mapToInt(Integer::parseInt).toArray()
-//            println(all_steps_intArr)
-//        } catch (e: FileNotFoundException) {
-//            e.printStackTrace()
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
 
-    }
+        // 실제걸음수/추천걸음수 그래프
 
-//    //은바니 csv 읽는 메소드
-//    @Throws(IOException::class)
-//    private fun parse(`in`: InputStream): ArrayList<Data>? {
-//        val results = ArrayList<Data>()
-//        val reader = BufferedReader(InputStreamReader(`in`))
-//        var nextLine: String = reader.readLine()
-//        while (reader.readLine().also({ nextLine = it }) != null) {
-//            val tokens = nextLine.split(",").toTypedArray()
-//            if (tokens.size != 3) {
-//                Log.w("CSVParser", "Skipping Bad CSV Row")
-//                continue
-//            }
-//            //Add new parsed result
-//            val current = Data()
-//            current.date = tokens[COL_DATE]
-//            current.time = tokens[COL_TIME]
-//            current.steps = tokens[COL_STEPS]
-//            results.add(current)
-//        }
-//        `in`.close()
-//        return results
-//    }
+//        barlist= ArrayList()
+//        barlist.add(BarEntry(10f,500f))
+//        lineDataSet=BarDataSet(barlist,"Step")
+//        barData=BarData(lineDataSet)
+//        lineDataSet.setColor(0x888888,0x88)//?
+//        lineDataSet.valueTextColor=Color.BLACK
+//        lineDataSet.valueTextSize=15f
+
+
+    }//oncreate 끝
+
     /**
      * 미밴드 디바이스 정보를 뷰에 나타냄
      */
     @RequiresApi(Build.VERSION_CODES.ECLAIR)
     fun setMibandDeviceInfoView() {
-        val textView: TextView = findViewById<TextView>(R.id.deviceName)
-        val textView2: TextView = findViewById<TextView>(R.id.address)
-        findViewById<View>(R.id.scrollView).visibility = View.VISIBLE
+//        val textView: TextView = findViewById<TextView>(R.id.deviceName)
+//        val textView2: TextView = findViewById<TextView>(R.id.address)
+//        findViewById<View>(R.id.scrollView).visibility = View.VISIBLE
         scanBtn?.visibility = View.INVISIBLE
         findViewById<ProgressBar>(R.id.progressBar).visibility = View.GONE
         mBtn?.visibility = View.VISIBLE
 //        textView.append(": "+mibandDevice!!.name)
 //        textView2.append(": "+mibandDevice!!.address)
-        textView.text = mibandDevice!!.name
-        textView2.text = mibandDevice!!.address
+       // textView.text = mibandDevice!!.name//메인에서 디바이스 이름 표시 >지워
+        //textView2.text = mibandDevice!!.address//디바이스 맥주소 표시 >지워
     }
 
     /**
@@ -273,7 +253,7 @@ class MainActivity : AppCompatActivity(){
                 ACTION_DATA_AVAILABLE -> {
                     //데이터를 받을때
                     val real_step: TextView = findViewById<TextView>(R.id.real_step)
-                    val distance: TextView = findViewById<TextView>(R.id.distance)
+//                    val distance: TextView = findViewById<TextView>(R.id.distance)
                     val recommend_step:TextView= findViewById<TextView>(R.id.recommend_step)
 
                     if (intent.hasExtra("totalSteps")) {
@@ -284,25 +264,15 @@ class MainActivity : AppCompatActivity(){
                     }
                     if (intent.hasExtra("distance")) {
 //                        distance.append(" "+intent.getIntExtra("distance", 1).toString())
-                        distance.text = "총 거리 : "+intent.getIntExtra("distance", 1).toString()
+                       // distance.text = "총 거리 : "+intent.getIntExtra("distance", 1).toString()
                     } else {
                         Log.d("data_get", "distance error")
                     }
 
-//                    recommend_step.text = "추천 걸음수 : "+b.sum_step/15
-//                    Log.d("b.sum_step",b.sum_step.toString())
-//                    if (intent.hasExtra("recommend_step")) {
-////                        distance.append(" "+intent.getIntExtra("distance", 1).toString())
-//                        recommend_step.text = "추천 걸음수 : "+intent.getIntExtra("recommend_step",1).toString()
-//                    } else {
-//                        Log.d("data_get", "recommend_step error")
-//                    }
+
                 }
                 ACTIVITY_DATA_FETCH->{
-//                    val recommend_step:TextView= findViewById<TextView>(R.id.recommend_step)
-//                    recommend_step.text = "추천 걸음수 : "+intent.getIntExtra("recommend_step",1).toString()
-//                    recommend_step.text = "추천 걸음수 : "+b.sum_step/15
-                    //Log.d("b.sum_step",b.sum_step.toString())
+
                 }
                 ACTIVITY_DATA_SEND_OVER->{//intent action이 이거 일때
                     val recommend_step:TextView= findViewById<TextView>(R.id.recommend_step)
@@ -423,4 +393,6 @@ class MainActivity : AppCompatActivity(){
             return intentFilter
         }
     }
+
+
 }
