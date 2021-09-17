@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity(){
 
         showBt!!.setOnClickListener {
             //설문조사가 잘 저장됨
-            val nextIntent = Intent(this, ModelClient::class.java)
+            val nextIntent = Intent(this, MapActivity::class.java)
             startActivity(nextIntent)
             //설문조사 저장후 메인으로 넘어감
 
