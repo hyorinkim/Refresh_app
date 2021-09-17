@@ -1,13 +1,16 @@
 package com.example.refresh_selection;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,7 +31,25 @@ public class Survey extends AppCompatActivity {
 //        super.onCreate(savedInstanceState);
         setContentView(R.layout.survey);
 
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_single_choice, List_menu);
+        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_single_choice, List_menu){
+
+            @Override
+
+            public View getView(int position, View convertView, ViewGroup parent)
+
+            {
+
+                View view = super.getView(position, convertView, parent);
+
+                TextView tv = (TextView) view.findViewById(android.R.id.text1);
+
+                tv.setTextColor(Color.BLACK);
+
+                return view;
+
+            }
+
+        };
 
         ListView listview = (ListView) findViewById(R.id.survey_act_time);
 

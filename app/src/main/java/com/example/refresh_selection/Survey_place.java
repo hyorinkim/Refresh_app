@@ -1,14 +1,17 @@
 package com.example.refresh_selection;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -39,7 +42,25 @@ public class Survey_place extends AppCompatActivity {
         setContentView(R.layout.survey_place) ;
         place=new ArrayList<String>();
         //배열로 바꿔줘야하나?
-        ArrayAdapter adapter2 = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, List_menu2);
+        ArrayAdapter adapter2 = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, List_menu2){
+
+            @Override
+
+            public View getView(int position, View convertView, ViewGroup parent)
+
+            {
+
+                View view = super.getView(position, convertView, parent);
+
+                TextView tv = (TextView) view.findViewById(android.R.id.text1);
+
+                tv.setTextColor(Color.BLACK);
+
+                return view;
+
+            }
+
+        };
         ListView listview2 = (ListView) findViewById(R.id.survey_place_table);
         listview2.setAdapter(adapter2);
         listview2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
