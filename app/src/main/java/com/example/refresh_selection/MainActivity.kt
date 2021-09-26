@@ -4,12 +4,12 @@ import android.Manifest
 import android.bluetooth.*
 import android.content.*
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -17,10 +17,12 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.github.mikephil.charting.charts.BarChart
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.*
 import java.util.*
@@ -31,7 +33,7 @@ private const val SCAN_PERIOD: Long = 10000
 private val TAG = BluetoothLeService::class.java.simpleName
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-class MainActivity : AppCompatActivity(){
+class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     private val REQUEST_ENABLE_BT = 3
     private var leDeviceListAdapter: LeDeviceListAdapter? = null
     private var mScanning: Boolean = false
@@ -78,6 +80,7 @@ class MainActivity : AppCompatActivity(){
     /**
      * 앱 시작 시 실행
      */
+
     @RequiresApi(Build.VERSION_CODES.ECLAIR)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,8 +163,22 @@ class MainActivity : AppCompatActivity(){
 //        lineDataSet.valueTextColor=Color.BLACK
 //        lineDataSet.valueTextSize=15f
 
-
+        navigationView.setOnNavigationItemSelectedListener(this)
     }//oncreate 끝
+
+
+    // 왜이럼,,,,???
+
+    override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
+        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+        when (menuItem.itemId) {
+            R.id.MapItem -> transaction.replace(R.id.frameLayout, FragmentMap())
+                .commitAllowingStateLoss()
+            R.id.HomeItem -> transaction.replace(R.id.frameLayout, FragmentMain())
+                .commitAllowingStateLoss()
+        }
+        return true
+    }
 
     /**
      * 미밴드 디바이스 정보를 뷰에 나타냄

@@ -30,7 +30,7 @@ public class MapActivity extends AppCompatActivity {
 
         ViewGroup mapViewContainer = (ViewGroup) findViewById(R.id.map_view);
         mapViewContainer.addView(mapView);
-        getHashKey();
+//        getHashKey();
     }
     @RequiresApi(api = Build.VERSION_CODES.FROYO)
     private void getHashKey(){
