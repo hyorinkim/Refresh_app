@@ -74,7 +74,7 @@
         <!-- 카카오맵 사용 -->
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="5665dab0f75c2898dc5e884dc44fc935" />
+            android:value="4fd7fc1f51186abe0af6f8b9fb9dcd28" />
 
     </application>
 
