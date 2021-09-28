@@ -9,14 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import net.daum.mf.map.api.MapView;
-
-public class FragmentMap extends Fragment {
+public class FragmentProfile  extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_map, container, false);
-        MapView mapView = new MapView(getActivity());
-        ViewGroup mapViewContainer = (ViewGroup) v.findViewById(R.id.map_view);
-        mapViewContainer.addView(mapView);
-        return v;
+        return inflater.inflate(R.layout.activity_map, container, false); // 연결 activity 수정 필요
     }
 }

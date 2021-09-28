@@ -33,7 +33,7 @@ private const val SCAN_PERIOD: Long = 10000
 private val TAG = BluetoothLeService::class.java.simpleName
 
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity() {
     private val REQUEST_ENABLE_BT = 3
     private var leDeviceListAdapter: LeDeviceListAdapter? = null
     private var mScanning: Boolean = false
@@ -162,23 +162,8 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 //        lineDataSet.setColor(0x888888,0x88)//?
 //        lineDataSet.valueTextColor=Color.BLACK
 //        lineDataSet.valueTextSize=15f
-
-        navigationView.setOnNavigationItemSelectedListener(this)
     }//oncreate 끝
 
-
-    // 왜이럼,,,,???
-
-    override fun onNavigationItemSelected(menuItem: MenuItem): Boolean {
-        val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-        when (menuItem.itemId) {
-            R.id.MapItem -> transaction.replace(R.id.frameLayout, FragmentMap())
-                .commitAllowingStateLoss()
-            R.id.HomeItem -> transaction.replace(R.id.frameLayout, FragmentMain())
-                .commitAllowingStateLoss()
-        }
-        return true
-    }
 
     /**
      * 미밴드 디바이스 정보를 뷰에 나타냄

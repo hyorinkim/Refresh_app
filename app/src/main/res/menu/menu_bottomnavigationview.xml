@@ -2,13 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/MapItem"
-        android:icon="@drawable/map_deactivate"
-        android:title="Map" />
-    <item
         android:id="@+id/HomeItem"
+        android:checked="true"
         android:icon="@drawable/home_deactivate"
         android:title="Home" />
+    <item
+        android:id="@+id/MapItem"
+        android:checked="false"
+        android:icon="@drawable/map_deactivate"
+        android:title="Map" />
     <item
         android:id="@+id/MyPageItem"
         android:icon="@drawable/account_circle_deactivate"
