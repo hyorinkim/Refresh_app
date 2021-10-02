@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">refresh_selection</string>
+    <string name="app_bar_name">REFRESH</string>
+    <string name="content_description_search"></string>
 </resources>

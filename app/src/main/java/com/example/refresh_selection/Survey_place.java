@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -26,12 +29,10 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 public class Survey_place extends AppCompatActivity {
 
     static final String[] List_menu2={"카페", "음식점", "문화시설", "관광명소", "대형마트","공원"};
+    //음식점 주변을 도는게 산책이 맞나? 의문
     Button commit;
     private AlertDialog dialog;
     ArrayList<String> place;

@@ -21,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class MapActivity extends AppCompatActivity {
 
+    @RequiresApi(api = Build.VERSION_CODES.FROYO)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

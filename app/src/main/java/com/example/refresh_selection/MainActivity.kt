@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     private val BluetoothAdapter.isDisabled: Boolean
         get() = !isEnabled
-
+//버튼변수 선언
     private var mBtn: Button? = null
     private var scanBtn: Button? = null
     private var showBt:Button?=null
@@ -93,6 +93,13 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         scanBtn = findViewById<Button>(R.id.scan)//디바이스를 찾는 버튼
         showBt=findViewById<Button>(R.id.showBt)//모델 화면으로 이동 버튼
         leDeviceListAdapter = LeDeviceListAdapter()
+
+        //메인 화면에 있는 레이아웃 클릭시 달력 및 그래프화면으로 이동
+        val main_layout= findViewById<RelativeLayout>(R.id.linearlayout)
+        main_layout.setOnClickListener{
+            val nextIntent = Intent(this, StepGraph::class.java)
+            startActivity(nextIntent)
+        }
 
         packageManager.takeIf { it.missingSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) }?.also {
 //            Toast.makeText(this, R.string.ble_not_supported, Toast.LENGTH_SHORT).show()
