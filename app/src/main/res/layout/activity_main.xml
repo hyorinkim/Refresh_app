@@ -5,292 +5,180 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context=".MainActivity">
+    >
 
-<!--    <View-->
-<!--        android:id="@+id/view"-->
-<!--        android:layout_width="463dp"-->
-<!--        android:layout_height="886dp"-->
-<!--        android:background="#FFFFFF"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="@+id/toolbar" />-->
-
-
-<!--    <androidx.appcompat.widget.Toolbar-->
-<!--        android:id="@+id/toolbar"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="#E2F0D9"-->
-<!--        android:minHeight="?attr/actionBarSize"-->
-<!--        android:theme="?attr/actionBarTheme"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        tools:layout_editor_absoluteX="-6dp" />-->
-
-<!--    <androidx.appcompat.widget.Toolbar-->
-<!--        android:id="@+id/toolbar2"-->
-<!--        android:layout_width="399dp"-->
-<!--        android:layout_height="350dp"-->
-<!--        android:layout_marginTop="204dp"-->
-<!--        android:background="#E2F0D9"-->
-<!--        android:minHeight="?attr/actionBarSize"-->
-<!--        android:theme="?attr/actionBarTheme"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--    />-->
-    <TextView
-        android:id="@+id/main_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="REFRESH"
-        android:textColor="@color/colorPrimary"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        android:layout_marginTop="30dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="MissingConstraints" />
-
-
-    <!--    <androidx.constraintlayout.widget.Guideline-->
-<!--        android:id="@+id/guideline2"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="vertical"-->
-<!--        app:layout_constraintGuide_begin="20dp" />-->
-
-
-    <!--    <LinearLayout-->
-
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="vertical"-->
-<!--        android:visibility="visible"-->
-<!--        android:layout_marginTop="40dp"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/main_title"-->
-<!--        tools:ignore="MissingConstraints"-->
-<!--        tools:visibility="visible">-->
-
-<!--     -->
-<!--       -->
-<!--    </LinearLayout>-->
-
-    <RelativeLayout
-        android:id="@+id/linearlayout"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginTop="50dp"
-        android:visibility="visible"
-
-        android:clickable="true"
-        app:layout_constraintTop_toBottomOf="@+id/main_title"
-        tools:ignore="MissingConstraints"
-     >
-
-
-        <TextView
-            android:id="@+id/medal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:text="칭호를 획득해보세요!"
-            android:textStyle="bold"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="25sp" />
-
-        <TextView
-            android:id="@+id/real_step"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_below="@+id/medal"
-            android:text="갖고온 걸음수"
-            android:textColor="@color/colorGray"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/slash"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/real_step"
-            android:layout_below="@+id/medal"
-            android:text="/"
-            android:textColor="@color/colorGray"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/recommend_step"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_toRightOf="@+id/real_step"
-            android:layout_below="@+id/medal"
-            android:text="추천 걸음수"
-            android:textColor="@color/colorGray"
-            android:textSize="20sp" />
-
-        <com.github.mikephil.charting.charts.HorizontalBarChart
-           android:id="@+id/barChart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true" />
-        <Button
-            android:id="@+id/showBt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="60dp"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="show"
-            android:visibility="visible" />
-
-
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/distance"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="70dp"-->
-        <!--            android:layout_marginLeft="70dp"-->
-        <!--            android:layout_marginBottom="27dp"-->
-        <!--            android:text="distnace"-->
-        <!--            android:textColor="@color/colorPrimary"-->
-        <!--            android:textSize="30sp" />-->
-
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/deviceName"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="70dp"-->
-        <!--            android:layout_marginLeft="70dp"-->
-        <!--            android:layout_marginTop="20dp"-->
-        <!--            android:text="기기이름"-->
-        <!--            android:textColor="@color/colorPrimary"-->
-        <!--            android:textSize="24sp" />-->
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/address"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginStart="70dp"-->
-        <!--            android:layout_marginLeft="70dp"-->
-        <!--            android:layout_marginTop="20dp"-->
-        <!--            android:text="mac 주소"-->
-        <!--            android:textColor="@color/colorPrimary"-->
-        <!--            android:textSize="24sp" />-->
-
-    </RelativeLayout>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/scan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimary"
-        android:text="SCAN"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="@+id/progressBar"
-        app:layout_constraintStart_toStartOf="@+id/progressBar"
-        app:layout_constraintTop_toTopOf="@+id/progressBar" />
-
-    <Button
-        android:id="@+id/pairBt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorPrimary"
-        android:layout_marginLeft="5dp"
-        android:text="pairing"
-        android:visibility="invisible"
-        app:layout_constraintBaseline_toBaselineOf="@id/scan"
-        app:layout_constraintBottom_toTopOf="@+id/linearlayout"
-        app:layout_constraintStart_toEndOf="@id/progressBar"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-<!--  <HorizontalScrollView
+ <HorizontalScrollView
            android:id="@+id/area_layout"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
-           app:layout_constraintTop_toBottomOf="@id/app_top_bar_layout">
+     tools:ignore="MissingConstraints">
            <RelativeLayout
                android:layout_width="match_parent"
-               android:layout_height="wrap_content">
-
+               android:layout_height="wrap_content"
+               android:layout_gravity="center">
                <ImageButton
-                   android:id="@+id/img1"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:background="@drawable/round_corner"
-                   android:src="@drawable/seoul"
-                   />
-               <ImageButton
+                   android:layout_margin="10dp"
                    android:id="@+id/img2"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:layout_toRightOf="@+id/img1"
+
                    android:background="@drawable/round_corner"
-                   android:src="@drawable/seoul"/>
+                   android:src="@drawable/deajon_bt"/>
                <ImageButton
+                   android:layout_margin="10dp"
                    android:id="@+id/img3"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_toRightOf="@+id/img2"
                    android:background="@drawable/round_corner"
-                   android:src="@drawable/seoul"/>
+                   android:src="@drawable/deagu_bt"/>
                <ImageButton
+                   android:layout_margin="10dp"
                    android:id="@+id/img4"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:layout_toRightOf="@+id/img3"
                    android:background="@drawable/round_corner"
-                   android:src="@drawable/seoul"/>
+                   android:src="@drawable/jeonju_bt"/>
+               <ImageButton
+                   android:layout_margin="10dp"
+                   android:id="@+id/img5"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_toRightOf="@+id/img4"
+                   android:background="@drawable/round_corner"
+                   android:src="@drawable/jeju_bt"/>
            </RelativeLayout>
 
        </HorizontalScrollView>
         <FrameLayout
-            android:id="@+id/frame_layout"
+            android:id="@+id/travel_space_title_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:ignore="MissingConstraints"
+            android:padding="10dp"
             app:layout_constraintTop_toBottomOf="@+id/area_layout"
-            app:layout_constraintBottom_toTopOf="@id/navigationView">
+            >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/main_recommend_title"
-                android:textSize="30sp"
+                android:textSize="20sp"
                 android:textColor="@color/black"
                 android:textStyle="bold"/>
-            <FrameLayout
+        </FrameLayout>
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@+id/travel_space_title_layout"
+        android:id="@+id/linear_vertic_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="vertical"
+        android:background="@drawable/round_corner_rectangle"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/test_img"
+            />
+        <LinearLayout
+            android:id="@+id/linear_horizon_layout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/linear_vertic_layout">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="대청호"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:layout_gravity="left"
+                android:layout_marginLeft="45dp"
+                android:padding="5dp"
+                />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="별점"
+                android:textSize="10sp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="150dp"
+                android:padding="10dp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linear_horizon_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                >
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="가져올 여행지 이름"
-                    android:textColor="@color/black"
+                android:text="바다가 아름답다!"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:layout_marginLeft="45dp"/>
+            <ImageButton
+                android:id="@+id/heart_bt"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@color/white"
+                android:layout_marginLeft="150dp"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/heart_bt" />
+            <ImageButton
+                android:id="@+id/cal_bt"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@color/white"
+                android:src="@drawable/calendar_bt"
+                />
+        </LinearLayout>
+    </LinearLayout>
 
-                    />
 
-            </FrameLayout>
-        </FrameLayout>-->
+    <!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        tools:ignore="MissingConstraints">-->
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="200dp"-->
+<!--                tools:layout_editor_absoluteX="114dp"-->
+<!--                tools:layout_editor_absoluteY="178dp">-->
+
+<!--                <ImageButton-->
+<!--                    android:id="@+id/heart_bt"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_alignParentBottom="true"-->
+<!--                    android:layout_marginRight="10dp"-->
+<!--                    android:src="@drawable/heart_bt" />-->
+
+<!--                <ImageButton-->
+<!--                    android:id="@+id/cal_bt"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_alignParentEnd="true"-->
+<!--                    android:layout_alignParentRight="true"-->
+<!--                    android:layout_alignParentBottom="true"-->
+<!--                    android:layout_toRightOf="@+id/heart_bt"-->
+<!--                    android:src="@drawable/calendar_bt" />-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_alignParentLeft="true"-->
+<!--                    android:text="여행지 이름"-->
+<!--                    android:textColor="@color/colorGray"-->
+<!--                    android:textSize="10sp" />-->
+<!--            </RelativeLayout>-->
+<!--      -->
+
+<!--    </LinearLayout>-->
 
 
 
