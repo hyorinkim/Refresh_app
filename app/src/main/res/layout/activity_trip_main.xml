@@ -4,23 +4,68 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".ProductGridFragment">
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:id="@+id/background_layout"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:liftOnScroll="true">
+       <com.google.android.material.appbar.AppBarLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           app:liftOnScroll="true"
+           tools:ignore="MissingConstraints"
+           android:id="@+id/app_top_bar_layout"
+           >
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/app_bar"
-            style="@style/Widget.MaterialComponents.Toolbar.Primary"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="@string/app_bar_name"
-            app:menu="@menu/menu_top_app_bar"
-            app:navigationIcon="@drawable/ic_menu_24dp"
-            />
-    </com.google.android.material.appbar.AppBarLayout>
+           <androidx.appcompat.widget.Toolbar
+               android:id="@+id/app_bar"
+               android:layout_width="match_parent"
+               android:layout_height="?attr/actionBarSize"
+               android:background="@color/white"
+               android:outlineAmbientShadowColor="@color/browser_actions_bg_grey"
+               app:menu="@menu/menu_top_app_bar">
+               <TextView
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:text="REFRESH"
+                   android:textStyle="bold"
+                   android:textColor="@color/colorPrimary"
+                   android:layout_gravity="center"
+                   android:id="@+id/toolbar_title"
+                   android:textSize="20sp"
+                   />
+           </androidx.appcompat.widget.Toolbar>
+
+       </com.google.android.material.appbar.AppBarLayout>
+
+<!--       bottom nav에 의해서 바뀔 전체 화면-->
+       <FrameLayout
+           android:id="@+id/frameLayout"
+           android:layout_width="0dp"
+           android:layout_height="0dp"
+           app:layout_constraintTop_toBottomOf="@id/app_top_bar_layout"
+           app:layout_constraintBottom_toTopOf="@+id/trip_navigationView"
+           app:layout_constraintLeft_toLeftOf="parent"
+           app:layout_constraintRight_toRightOf="parent" />
+
+       <com.google.android.material.bottomnavigation.BottomNavigationView
+           android:id="@+id/trip_navigationView"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:background="@color/cardview_light_background"
+           app:itemBackground="@color/cardview_light_background"
+           app:itemIconTint="@drawable/item_color"
+           app:layout_constraintBottom_toBottomOf="@id/background_layout"
+           app:layout_constraintLeft_toLeftOf="@id/background_layout"
+           app:layout_constraintRight_toLeftOf="@id/background_layout"
+           app:menu="@menu/menu_bottomnavigationview" />
+
+   </androidx.constraintlayout.widget.ConstraintLayout>
+<!--      app:labelVisibilityMode="unlabeled"-->
+
+
 
 </FrameLayout>
 
