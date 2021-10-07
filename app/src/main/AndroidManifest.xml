@@ -36,9 +36,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_main_round"
         android:supportsRtl="true"
-
         android:theme="@style/Theme.AppCompat.NoActionBar"
-
         android:name=".GlobalApplication"
         ><!--        카카오 로그인 sdk 초기화-->
 
@@ -53,23 +51,14 @@
             android:value="b63218adf0b8faca9858f34a6c960f29" />
 
 <!--앱화면-->
-        <activity android:name=".LoginActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-        </activity>
-        <activity android:name=".RegisterJoin"></activity>
-
-        <activity android:name=".Survey"></activity>
-        <activity android:name=".Survey_place"></activity>
-        <activity android:name=".MainActivity">
+<!--        메인레이아웃 화면-->
+        <activity android:name=".MainActivity_travel">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ModelClient"></activity>
+
         <activity android:name=".MapActivity"></activity>
 
 <!--      카카오 로그인-->
@@ -87,8 +76,6 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".AlarmRecevier"></receiver>
-        <service android:name=".BluetoothLeService" android:enabled="true"/>
         <!--        oreo중에 일부기기에 ERROR-->
         <!--        volley라이브러리가 http통신 기술을 사용하기에..oreo 운영체제에서 동작을 막아버림-->
 

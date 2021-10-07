@@ -81,7 +81,7 @@ dependencies {
     implementation "com.kakao.sdk:v2-user:2.8.1" // 카카오 로그인
     implementation "com.kakao.sdk:v2-navi:2.8.1" // 카카오내비
     //GUI 꾸미는 것
-    api 'com.google.android.material:material:1.1.0-alpha06'
+    implementation 'com.google.android.material:material:1.0.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }
