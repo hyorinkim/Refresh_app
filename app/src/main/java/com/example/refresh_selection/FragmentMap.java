@@ -7,10 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,6 +23,14 @@ import net.daum.mf.map.api.MapView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class FragmentMap extends Fragment implements MapView.MapViewEventListener, ModalBottomSheet.BottomSheetListener {
     private String MarkerName;//마커 장소이름
     private double Latitude;//위도
@@ -37,8 +41,11 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
     private GpsTracker gpsTracker;//gpsTracker 객체
     //바텀시트
     private BottomSheetBehavior sheetBehavior;
-    private ModalBottomSheet modal;
     LinearLayout layoutBottomSheet;
+    //바텀 시트 안에 카드뷰
+    BottomCardAdapter bottomCardAdapter;
+    private RecyclerView bottomRV;
+    private ArrayList<BottomCard> bottomCardArrayList;//카드 정보 저장
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.activity_map, container, false);
@@ -114,6 +121,21 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
     @Override
     public void onButtonClicked() {//ModalBottomSheet.BottomSheetListner
 
+    }
+
+    //장소 카드 만듣
+    public void makeMapSpaceCard(ViewGroup mainview) {
+        bottomRV = (RecyclerView) mainview.findViewById(R.id.idRVSpace);//activitiy_map : bottomsheet layout
+        bottomRV.setHasFixedSize(true);
+        bottomCardArrayList= new ArrayList<>();
+        bottomCardArrayList.add(new BottomCard("대청호1","호수가 아름답다.","300m","1000원",R.drawable.test_img));
+        bottomCardArrayList.add(new BottomCard("대청호1","호수가 아름답다.","300m","1000원",R.drawable.test_img));
+        bottomCardArrayList.add(new BottomCard("대청호1","호수가 아름답다.","300m","1000원",R.drawable.test_img));
+
+        bottomCardAdapter =new BottomCardAdapter(mainview.getContext(),bottomCardArrayList);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mainview.getContext(), LinearLayoutManager.VERTICAL, false);
+        bottomRV.setLayoutManager(linearLayoutManager);
+        bottomRV.setAdapter(bottomCardAdapter);
     }
 
     private void requestLatitudeLongtitude(double latitude, double longitude,int radius) {//서버에 장소 좌표 요청하는 메소드
