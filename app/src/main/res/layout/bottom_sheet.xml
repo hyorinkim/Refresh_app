@@ -10,11 +10,11 @@
         style="?attr/bottomSheetStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@drawable/round_corner_rectangle"
         android:orientation="vertical"
         android:theme="@style/ModalBottomSheetDialog"
         app:behavior_draggable="true"
-        app:behavior_peekHeight="80dp"
+        app:behavior_peekHeight="500dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="MissingConstraints">
@@ -24,26 +24,50 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <ImageView
+                android:padding="10dp"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/bottom_sheet_Line"
+                />
+
+            <LinearLayout
+                android:padding="10dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="#"
-                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:text="# "
+                    android:textAppearance="?attr/textAppearanceSearchResultTitle"
                     android:textColor="@color/colorPrimaryDark" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/bottom_sheet_title"
-                    android:textAppearance="?attr/textAppearanceBody1" />
-
+                    android:textAppearance="?attr/textAppearanceSearchResultTitle" />
+                <LinearLayout
+                    android:layout_width="230dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <ImageButton
+                        android:layout_gravity="right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/filter_bt"
+                        android:background="@color/white"/>
+                </LinearLayout>
 
             </LinearLayout>
+            <ImageView
+                android:padding="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/long_line"/>
             <!-- Bottom sheet contents. -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/bottom_sheet_recycleview"
