@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/bottom_sheet">
 
     <LinearLayout
         android:id="@+id/standard_bottom_sheet"
@@ -29,7 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/bottom_sheet_Line"
+                android:src="@drawable/long_line"
                 />
 
             <LinearLayout
@@ -59,6 +60,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/filter_bt"
+                        android:backgroundTint="@color/black"
                         android:background="@color/white"/>
                 </LinearLayout>
 
