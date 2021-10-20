@@ -3,19 +3,44 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".Calendar_java">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white"
         android:gravity="center">
 
         <DatePicker
             android:id="@+id/cal_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:theme="@style/AppTheme"
             style="@style/Widget.MaterialComponents.MaterialCalendar"
             android:datePickerMode="calendar"
-            />
+            tools:ignore="MissingConstraints" />
+
+        <LinearLayout
+            android:layout_width="100dp"
+            android:layout_height="70dp"
+            android:orientation="vertical"
+            >
+
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/addPlaceToSchedule"
+                android:src="@drawable/add_plus_bt"
+                android:background="@color/white"
+                android:layout_gravity="center"
+                />
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+        </LinearLayout>
 <!--        <CalendarView-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
