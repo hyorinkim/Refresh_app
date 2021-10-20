@@ -46,12 +46,13 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
     BottomCardAdapter bottomCardAdapter;
     private RecyclerView bottomRV;
     private ArrayList<BottomCard> bottomCardArrayList;//카드 정보 저장
-
+    View v;
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_map, container, false);
-        View v2 = inflater.inflate(R.layout.bottom_sheet, container, false);
+         v = inflater.inflate(R.layout.activity_map, container, false);
+        ViewGroup v2 = (ViewGroup)inflater.inflate(R.layout.bottom_sheet, container, false);
         MapView mapView = new MapView(getActivity());
         //마커 눌렀을때만? 바텀시트 띄우기
+        makeMapSpaceCard(v2);//바텀시트에 카드뷰 생성
         showBottomSheetDialog();
 
         /**
@@ -59,6 +60,7 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
          * we are changing button text when sheet changed state
          * */
         layoutBottomSheet=v2.findViewById(R.id.standard_bottom_sheet);
+
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
 
         sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -125,15 +127,16 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
 
     //장소 카드 만듣
     public void makeMapSpaceCard(ViewGroup mainview) {
-        bottomRV = (RecyclerView) mainview.findViewById(R.id.idRVSpace);//activitiy_map : bottomsheet layout
+        bottomRV = (RecyclerView) mainview.findViewById(R.id.bottom_sheet_recycleview);//activitiy_map : bottomsheet layout
         bottomRV.setHasFixedSize(true);
         bottomCardArrayList= new ArrayList<>();
         bottomCardArrayList.add(new BottomCard("대청호1","호수가 아름답다.","300m","1000원",R.drawable.test_img));
         bottomCardArrayList.add(new BottomCard("대청호1","호수가 아름답다.","300m","1000원",R.drawable.test_img));
         bottomCardArrayList.add(new BottomCard("대청호1","호수가 아름답다.","300m","1000원",R.drawable.test_img));
-
-        bottomCardAdapter =new BottomCardAdapter(mainview.getContext(),bottomCardArrayList);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mainview.getContext(), LinearLayoutManager.VERTICAL, false);
+//        Context con = mainview.getChildAt(1).getContext();
+//        Log.d("context",con+"");
+        bottomCardAdapter =new BottomCardAdapter(v.getContext(),bottomCardArrayList);//content가 문제인거 같은데..
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(v.getContext(), LinearLayoutManager.VERTICAL, false);
         bottomRV.setLayoutManager(linearLayoutManager);
         bottomRV.setAdapter(bottomCardAdapter);
     }
