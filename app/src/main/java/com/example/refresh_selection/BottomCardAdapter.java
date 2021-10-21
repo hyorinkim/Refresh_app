@@ -24,13 +24,13 @@ public class BottomCardAdapter extends RecyclerView.Adapter<BottomCardAdapter.Vi
 
     @NonNull
     @Override
-    public Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public BottomCardAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bottom_cardview,parent,false);
         return new Viewholder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull Viewholder holder, int position) {
+    public void onBindViewHolder(@NonNull BottomCardAdapter.Viewholder holder, int position) {
         BottomCard card = BottomCardArrayList.get(position);
         holder.btmIV.setImageResource(card.getImg());
         holder.btmNameTV.setText(card.getBottom_space_name());
