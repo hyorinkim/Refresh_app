@@ -8,21 +8,23 @@
     tools:ignore="MissingConstraints">
 
     <LinearLayout
+        android:layout_gravity="center"
         android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:orientation="vertical"
         android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="10dp">
             <ImageView
+                android:background="@drawable/bottom_img_round_corner"
                 android:id="@+id/btmIV"
-                android:layout_width="110dp"
-                android:layout_height="150dp"
+                android:layout_width="120dp"
+                android:layout_height="130dp"
                 android:src="@drawable/account_circle_deactivate"
                 android:layout_marginLeft="30dp"
                 android:layout_gravity="left"/>
@@ -30,7 +32,7 @@
                 android:layout_marginLeft="30dp"
                 android:padding="2dp"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <TextView
                     android:id="@+id/bottom_space_name"
@@ -64,7 +66,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
                         android:background="@drawable/bottom_cardview_textview"
-                        android:text="거리"
+                        android:text=" 거리"
                         />
                 </LinearLayout>
                 <LinearLayout
@@ -84,12 +86,12 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/black"
                         android:background="@drawable/bottom_cardview_textview"
-                        android:text="가격"
+                        android:text=" 가격"
                         />
                 </LinearLayout>
                 <LinearLayout
                     android:padding="5dp"
-                    android:layout_width="match_parent"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:orientation="horizontal">
@@ -114,6 +116,12 @@
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src ="@drawable/long_line"
+            />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
