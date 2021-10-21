@@ -1,17 +1,20 @@
 package com.example.refresh_selection;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
 
 public class FragmentMain extends Fragment {
     SpaceCardAdapter spaceCardAdapter;
@@ -21,7 +24,15 @@ public class FragmentMain extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup mainview =(ViewGroup)inflater.inflate(R.layout.activity_main3, container, false);
         makeSpaceCard(mainview);
-
+        FloatingActionButton fab = (FloatingActionButton) mainview.findViewById(R.id.fab_main);
+        fab.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view)
+            {
+                Intent intent =new Intent(mainview.getContext(),Calendar_java.class);
+                startActivity(intent);
+            }
+        });
         return mainview;
     }
 
