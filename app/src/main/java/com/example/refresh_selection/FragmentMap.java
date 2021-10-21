@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class FragmentMap extends Fragment implements MapView.MapViewEventListener, ModalBottomSheet.BottomSheetListener {
@@ -46,13 +45,12 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
     BottomCardAdapter bottomCardAdapter;
     private RecyclerView bottomRV;
     private ArrayList<BottomCard> bottomCardArrayList;//카드 정보 저장
-    View v;
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-         v = inflater.inflate(R.layout.activity_map, container, false);
-        ViewGroup v2 = (ViewGroup)inflater.inflate(R.layout.bottom_sheet, container, false);
+        View v = inflater.inflate(R.layout.activity_map, container, false);
+        ViewGroup v2= (ViewGroup)inflater.inflate(R.layout.bottom_sheet, container, false);
         MapView mapView = new MapView(getActivity());
         //마커 눌렀을때만? 바텀시트 띄우기
-        makeMapSpaceCard(v2);//바텀시트에 카드뷰 생성
         showBottomSheetDialog();
 
         /**
@@ -125,21 +123,6 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
 
     }
 
-    //장소 카드 만듣
-    public void makeMapSpaceCard(ViewGroup mainview) {
-        bottomRV = (RecyclerView) mainview.findViewById(R.id.bottom_sheet_recycleview);//activitiy_map : bottomsheet layout
-        bottomRV.setHasFixedSize(true);
-        bottomCardArrayList= new ArrayList<>();
-        bottomCardArrayList.add(new BottomCard("대청호1","호수가 아름답다.","300m","1000원",R.drawable.test_img));
-        bottomCardArrayList.add(new BottomCard("대청호1","호수가 아름답다.","300m","1000원",R.drawable.test_img));
-        bottomCardArrayList.add(new BottomCard("대청호1","호수가 아름답다.","300m","1000원",R.drawable.test_img));
-//        Context con = mainview.getChildAt(1).getContext();
-//        Log.d("context",con+"");
-        bottomCardAdapter =new BottomCardAdapter(v.getContext(),bottomCardArrayList);//content가 문제인거 같은데..
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(v.getContext(), LinearLayoutManager.VERTICAL, false);
-        bottomRV.setLayoutManager(linearLayoutManager);
-        bottomRV.setAdapter(bottomCardAdapter);
-    }
 
     private void requestLatitudeLongtitude(double latitude, double longitude,int radius) {//서버에 장소 좌표 요청하는 메소드
         RequestQueue queue = Volley.newRequestQueue(getContext());
