@@ -37,6 +37,46 @@ public class BottomCardAdapter extends RecyclerView.Adapter<BottomCardAdapter.Vi
         holder.btmDesTV.setText(card.getBottom_space_description());
         holder.btmDis.setText(card.getDistance());
         holder.btmPrice.setText(card.getPrice());
+
+        holder.like_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(holder.check_like==false||holder.like==true){
+                    if(holder.like==false){
+                        holder.like_bt.setImageResource(R.drawable.like_bt);//활성화
+                        holder.setLike(true);
+                        holder.check_like=true;//like dislike중 like 선택
+                    }else{
+                        holder.like_bt.setImageResource(R.drawable.unactivated_like);//비활성화
+                        holder.setLike(false);
+                        holder.check_like=false;
+                    }
+
+                }
+
+
+            }
+        });
+
+        holder.dislike_bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(holder.check_like==false||holder.dislike==true){//선택한거 없을때나
+                    if(holder.dislike==false){
+                        holder.dislike_bt.setImageResource(R.drawable.dislike_bt);//활성화
+                        holder.setDislike(true);
+                        holder.check_like=true;//like dislike중 dislike 선택
+                    }else{
+                        holder.dislike_bt.setImageResource(R.drawable.unactivated_dislike);//비활성화
+                        holder.setDislike(false);
+                        holder.check_like=false;
+                    }
+
+                }
+
+
+            }
+        });
     }
 
     @Override
@@ -47,6 +87,11 @@ public class BottomCardAdapter extends RecyclerView.Adapter<BottomCardAdapter.Vi
     public class Viewholder extends RecyclerView.ViewHolder {
         private ImageView btmIV;
         private TextView btmNameTV,btmDesTV,btmDis,btmPrice;
+        private ImageView like_bt, dislike_bt;
+        private Boolean check_like=false;
+        //like와 dislike 둘다 선택하는거 막음 둘중 하나만 선택 가능
+        private Boolean like=false, dislike=false;//like_bt dislike_bt 각각 선택되었는지 여부
+        // 2번째 클릭할때 deactive이미지로 바뀜
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
@@ -55,7 +100,34 @@ public class BottomCardAdapter extends RecyclerView.Adapter<BottomCardAdapter.Vi
             btmDesTV=itemView.findViewById(R.id.bottom_space_description);
             btmDis=itemView.findViewById(R.id.bottom_space_distance);
             btmPrice=itemView.findViewById(R.id.bottom_space_price);
+            like_bt=itemView.findViewById(R.id.like_bt);
+            dislike_bt=itemView.findViewById(R.id.dislike_bt);
 
+
+        }
+
+        public Boolean getLike() {
+            return like;
+        }
+
+        public void setLike(Boolean like) {
+            this.like = like;
+        }
+
+        public Boolean getDislike() {
+            return dislike;
+        }
+
+        public void setDislike(Boolean dislike) {
+            this.dislike = dislike;
+        }
+
+        public Boolean getCheck_like() {
+            return check_like;
+        }
+
+        public void setCheck_like(Boolean check_like) {
+            this.check_like = check_like;
         }
     }
 }
