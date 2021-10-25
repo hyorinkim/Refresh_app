@@ -100,11 +100,13 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
                         <ImageButton
+                            android:id="@+id/like_bt"
                             android:background="@color/white"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/unactivated_like"/>
                         <ImageButton
+                            android:id="@+id/dislike_bt"
                             android:layout_marginLeft="15dp"
                             android:background="@color/white"
                             android:layout_width="wrap_content"
