@@ -12,22 +12,27 @@
         android:background="@color/white"
         android:gravity="center">
 
-        <DatePicker
-            android:id="@+id/cal_picker"
+<!--        <DatePicker-->
+<!--            android:id="@+id/cal_picker"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:theme="@style/AppTheme"-->
+<!--            style="@style/Widget.MaterialComponents.MaterialCalendar"-->
+<!--            android:datePickerMode="calendar"-->
+<!--            tools:ignore="MissingConstraints" />-->
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme"
-            style="@style/Widget.MaterialComponents.MaterialCalendar"
-            android:datePickerMode="calendar"
-            tools:ignore="MissingConstraints" />
+            android:id="@+id/select_date"
+            android:src="@drawable/calendar_bt"
+            />
 
         <LinearLayout
+            android:layout_marginTop="50dp"
             android:layout_width="100dp"
             android:layout_height="70dp"
             android:orientation="vertical"
             >
-
-
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,10 +46,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"/>
         </LinearLayout>
-<!--        <CalendarView-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            tools:targetApi="honeycomb" />-->
+
 
     </LinearLayout>
 
