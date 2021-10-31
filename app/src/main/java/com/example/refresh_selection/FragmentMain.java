@@ -24,6 +24,9 @@ public class FragmentMain extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup mainview =(ViewGroup)inflater.inflate(R.layout.activity_main3, container, false);
         makeSpaceCard(mainview);
+
+
+
         FloatingActionButton fab = (FloatingActionButton) mainview.findViewById(R.id.fab_main);
         fab.setOnClickListener(new View.OnClickListener(){
             @Override
