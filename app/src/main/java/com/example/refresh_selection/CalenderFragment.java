@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 
 import java.io.FileInputStream;
@@ -21,15 +20,17 @@ import androidx.fragment.app.DialogFragment;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class CalenderFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
     ViewGroup calFragmentView;
+    String TAG="MATERIAL_DATE_PICKER";
+
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        calFragmentView =(ViewGroup)inflater.inflate(R.layout.calendar_java, container, false);
-        CalendarView calview = calFragmentView.findViewById(R.id.calView);
-        calview.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {//날짜에 변경이 일어날때
-            @Override//날짜 선택이벤트
-            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                checkDay(year,month,dayOfMonth,"id?");
-            }
-        });
+        calFragmentView =(ViewGroup)inflater.inflate(R.layout.calendar_kotlin, container, false);
+//        CalendarView calview = calFragmentView.findViewById(R.id.calView);
+//        calview.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {//날짜에 변경이 일어날때
+//            @Override//날짜 선택이벤트
+//            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
+//                checkDay(year,month,dayOfMonth,"id?");
+//            }
+//        });
         return calFragmentView;
     }
 
