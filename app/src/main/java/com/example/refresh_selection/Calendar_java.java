@@ -2,6 +2,7 @@ package com.example.refresh_selection;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
@@ -9,6 +10,8 @@ import android.widget.ImageView;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
+
+import java.util.Date;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,9 +52,16 @@ public class Calendar_java extends AppCompatActivity {
 
             }
         });
-        materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
+        materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<Pair<Long,Long>>() {
             @Override
-            public void onPositiveButtonClick(Object selection) {
+            public void onPositiveButtonClick(Pair<Long,Long> selection) {
+                Long startDate= selection.first;
+                Long endDate= selection.second;
+
+                Date start=new Date(startDate);
+                Date end = new Date(endDate);
+                Log.d("startDate",start.toString());
+                Log.d("endDate",end.toString());
                 //확인 버튼 눌렀을때?
             }
         });
