@@ -30,7 +30,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class FragmentMap extends Fragment implements MapView.MapViewEventListener, ModalBottomSheet.BottomSheetListener {
+public class FragmentMap extends Fragment implements MapView.MapViewEventListener, MapView.POIItemEventListener, ModalBottomSheet.BottomSheetListener {
     private String MarkerName;//마커 장소이름
     private double Latitude;//위도
     private double Longitude;//경도
@@ -50,43 +50,44 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
         View v = inflater.inflate(R.layout.activity_map, container, false);
         ViewGroup v2= (ViewGroup)inflater.inflate(R.layout.bottom_sheet, container, false);
         MapView mapView = new MapView(getActivity());
-        //마커 눌렀을때만? 바텀시트 띄우기
-        showBottomSheetDialog();
+        mapView.setPOIItemEventListener(this);//마커 눌렀을때만? 바텀시트 띄우기
+        //showBottomSheetDialog();
 
         /**
          * bottom sheet state change listener
          * we are changing button text when sheet changed state
          * */
-        layoutBottomSheet=v2.findViewById(R.id.standard_bottom_sheet);
-
-        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
-
-        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED: {
-
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_COLLAPSED: {
-
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        break;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });//바텀시트 행위
+//        layoutBottomSheet=v2.findViewById(R.id.standard_bottom_sheet);
+//
+//        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
+//
+//        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+//            @Override
+//            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+//                switch (newState) {
+//                    case BottomSheetBehavior.STATE_HIDDEN:
+//                        break;
+//                    case BottomSheetBehavior.STATE_EXPANDED: {
+//
+//                    }
+//                    break;
+//                    case BottomSheetBehavior.STATE_COLLAPSED: {
+//
+//                    }
+//                    break;
+//                    case BottomSheetBehavior.STATE_DRAGGING:
+//                        break;
+//                    case BottomSheetBehavior.STATE_SETTLING:
+//                        break;
+//                }
+//            }
+//
+//            @Override
+//            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+//
+//            }
+//        });
+        //바텀시트 행위
 
 
         //지도를 현재위치에 있는 장소로 띄어줌
@@ -97,15 +98,14 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
         mapView.getCurrentLocationTrackingMode();
 
         gpsTracker = new GpsTracker(getActivity());
-        double lati = gpsTracker.getLatitude(); // 위도
-         double longi = gpsTracker.getLongitude();// 경도
+        double lati = gpsTracker.getLatitude(); // 현재 위치 위도
+         double longi = gpsTracker.getLongitude();// 현재위치 경도
         // 필요시 String address = getCurrentAddress(latitude, longitude);
         Log.d("lati longi",lati+" "+longi+"");
         
         requestLatitudeLongtitude(lati,longi,Radius);//경도 위도 array를 받나?
-        testmarker = setMarker(MarkerName, Latitude, Longitude, Tag);//서버에서 가져온 위도,경도,마커이름 //#태그번호는 임의로 지정?
+        testmarker = setMarker("충남대학교",36.369032616640105, 127.34697568537104,0);//setMarker(MarkerName, Latitude, Longitude, Tag);//서버에서 가져온 위도,경도,마커이름 //#태그번호는 임의로 지정?
         mapView.addPOIItem(testmarker);//마커 표시
-
         ViewGroup mapViewContainer = (ViewGroup) v.findViewById(R.id.map_view);//xml에 지도넣기
         mapViewContainer.addView(mapView);
 
@@ -219,5 +219,25 @@ public class FragmentMap extends Fragment implements MapView.MapViewEventListene
 
     }
 
+//MapView.POIItemEventListener 구현
+    @Override
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+        showBottomSheetDialog();
+        Log.d("marker click","마커 눌럿음");
+    }
 
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+
+    }
+
+    @Override
+    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
+
+    }
 }
