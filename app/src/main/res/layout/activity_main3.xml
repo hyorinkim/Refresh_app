@@ -24,38 +24,38 @@
                 android:layout_gravity="center">
 
                 <ImageButton
-                    android:id="@+id/img2"
+                    android:id="@+id/deajon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-
                     android:background="@drawable/round_corner"
-                    android:src="@drawable/deajon_bt" />
+                    android:src="@drawable/deajon_bt"
+                    />
 
                 <ImageButton
-                    android:id="@+id/img3"
+                    android:id="@+id/deagu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:layout_toRightOf="@+id/img2"
+                    android:layout_toRightOf="@+id/deajon"
                     android:background="@drawable/round_corner"
                     android:src="@drawable/deagu_bt" />
 
                 <ImageButton
-                    android:id="@+id/img4"
+                    android:id="@+id/junju"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:layout_toRightOf="@+id/img3"
+                    android:layout_toRightOf="@+id/deagu"
                     android:background="@drawable/round_corner"
                     android:src="@drawable/jeonju_bt" />
 
                 <ImageButton
-                    android:id="@+id/img5"
+                    android:id="@+id/jeju"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:layout_toRightOf="@+id/img4"
+                    android:layout_toRightOf="@+id/junju"
                     android:background="@drawable/round_corner"
                     android:src="@drawable/jeju_bt" />
             </RelativeLayout>
