@@ -29,7 +29,9 @@ public class ScheduleCardAdapter extends RecyclerView.Adapter<ScheduleCardAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ScheduleCardAdapter.Viewholder holder, int position) {
-
+        ScheduleCard sc=ScheduleCardArrayList.get(position);
+        holder.schedule_date.setText(sc.getSchedule_date());
+        //뷰는 뭐로 채워야할까?
     }
 
     @Override

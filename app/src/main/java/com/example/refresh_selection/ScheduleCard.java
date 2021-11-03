@@ -10,6 +10,9 @@ public class ScheduleCard {//
         this.schedule_date=schedule_date;
         this.schedule=schedule;
     }
+    public ScheduleCard(String schedule_date){
+        this.schedule_date=schedule_date;
+    }
 
     public String getSchedule_date() {
         return schedule_date;
