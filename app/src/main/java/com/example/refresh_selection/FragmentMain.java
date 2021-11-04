@@ -1,6 +1,7 @@
 package com.example.refresh_selection;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 import androidx.annotation.NonNull;
@@ -109,7 +112,7 @@ public class FragmentMain extends Fragment {
 
     private void requestSpace(ViewGroup mainview) {//서버에 장소 좌표 요청하는 메소드
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = "http://3.19.79.3:8089//api/getMainPlaces";//서버url
+        String url = "http://18.218.2.153:8089//api/getMainPlaces";//서버url
         JSONArray testjson = new JSONArray();//서버에게 전달 할 값을 json으로 보냄
 //        try {
 //            testjson.put(0,area);
@@ -126,8 +129,9 @@ public class FragmentMain extends Fragment {
                         String name = place.getString("name");
                         String descript=place.getString("description");
                         String tag = place.getString("tag");
-//                        int ImgSrc = Integer.parseInt(place.getString("imgSrc"));
-                        spaceCardArrayList.add(new SpaceCard(name,descript,tag,R.drawable.test_img));
+                        String ImgSrc = place.getString("imgSrc");
+
+                        spaceCardArrayList.add(new SpaceCard(name,descript,tag,LoadImageFromWebOperations(ImgSrc,i+"")));
                     }
                     spaceRV = (RecyclerView) mainview.findViewById(R.id.idRVSpace);//main_activity_3
                     spaceRV.setHasFixedSize(true);
@@ -148,5 +152,14 @@ public class FragmentMain extends Fragment {
         });
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request);
+    }
+    public static Drawable LoadImageFromWebOperations(String url,String srcName) {
+        try {
+            InputStream is = (InputStream) new URL(url).getContent();
+            Drawable d = Drawable.createFromStream(is, "res/drawable/"+srcName);
+            return d;
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

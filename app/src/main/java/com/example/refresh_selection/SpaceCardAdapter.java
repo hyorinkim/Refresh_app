@@ -44,7 +44,8 @@ public class SpaceCardAdapter extends RecyclerView.Adapter<SpaceCardAdapter.View
     @Override
     public void onBindViewHolder(@NonNull SpaceCardAdapter.Viewholder holder, int position) {
         SpaceCard card =SpaceCardArrayList.get(position);
-        holder.spaceIV.setImageResource(card.getImage());
+        holder.spaceIV.setImageDrawable(card.getImage());
+//        holder.spaceIV.setImageResource(card.getImage());
         holder.spaceNameTV.setText(card.getSpace_name());
         Log.d("space_name",card.getSpace_name());
         holder.spaceDescriptionTV.setText(card.getDescription());
