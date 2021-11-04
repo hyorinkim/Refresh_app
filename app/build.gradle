@@ -49,7 +49,6 @@ android {
         checkReleaseBuilds false
     }
 }
-
 dependencies {
     implementation 'com.google.android.gms:play-services-fitness:18.0.0'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
@@ -91,5 +90,9 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0"
     //view Binding 바텀시트코드를 참조할 때 나왔음
     // butter knife
-    compile 'com.jakewharton:butterknife:8.8.1'
+    implementation 'com.jakewharton:butterknife:8.8.1'
+
+//    //excel library 추가
+    implementation 'org.apache.poi:poi-ooxml:4.1.2'
+
 }
