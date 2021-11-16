@@ -16,6 +16,11 @@
  If your app targets Android 9 or lower, you can declare
          ACCESS_COARSE_LOCATION instead.
     -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<!--    앱내부저장소에 파일 저장할때 필요한 것 -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+<!--    웹상 이미지를 안드로이드 비트맵으로 만들기 위한 것-->
 
     <uses-sdk android:minSdkVersion="4"
         android:targetSdkVersion="27"
@@ -53,16 +58,20 @@
 <!--앱화면-->
 <!--        메인레이아웃 화면-->
         <activity android:name=".MainActivity_travel">
+
+        </activity>
+
+        <activity android:name=".MapActivity">
+
+        </activity>
+
+<!--      카카오 로그인-->
+        <activity android:name=".Login_kakao">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".MapActivity"></activity>
-
-<!--      카카오 로그인-->
-        <activity android:name=".Login_kakao"></activity>
         <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -74,6 +83,12 @@
                     android:host="oauth"
                     android:scheme="{b63218adf0b8faca9858f34a6c960f29}"/>
             </intent-filter>
+        </activity>
+        <activity android:name=".Calendar_java">
+
+        </activity>
+        <activity android:name=".Calendar_java2">
+
         </activity>
 
         <!--        oreo중에 일부기기에 ERROR-->
